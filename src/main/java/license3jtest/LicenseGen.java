@@ -24,22 +24,12 @@ import javax0.license3j.io.LicenseWriter;
 
 public class LicenseGen {
 
-	private static final String PUBLIC_KEY_FILE = "publicKeyFile";
-	private static final String PRIVATE_KEY_FILE = "privateKeyFile";
-	private static final String ALGORITHM = "algorithm";
-	private static final String DIGEST = "digest";
-	private static final String SIZE = "size";
-	private static final String FORMAT = "format";
-	private static final String CONFIRM = "confirm";
-	private static final String TEXT = "TEXT";
-	private static final String BINARY = "BINARY";
-	private static final String BASE_64 = "BASE64";
 	private License license;
 	private boolean licenseToSave = false;
 	private LicenseKeyPair keyPair;
 	
 	// generate a new license if there are no previously unsaved licenses
-	private void newLicense() {
+	public void newLicense() {
 		if(!licenseToSave) {
 			license = new License();
 		} else {
@@ -48,7 +38,7 @@ public class LicenseGen {
 	}
 	
 	// save license to file
-	private void saveLicense(String licenseName, IOFormat format) {
+	public void saveLicense(String licenseName, IOFormat format) {
 		if(license==null) {
 			// TODO show a message that there is no license to save
 			return;
@@ -65,7 +55,7 @@ public class LicenseGen {
 	}
 	
 	// dump license to screen
-	private void dumpLicense() {
+	public void dumpLicense() {
 		if(license==null) {
 			// TODO do something
 			return;
@@ -83,7 +73,7 @@ public class LicenseGen {
 	
 	
 	// load an existing license
-	private void loadLicense(File licenseFile, IOFormat format) {
+	public void loadLicense(File licenseFile, IOFormat format) {
 		if(licenseToSave) {
 			// TODO throw a warning message about unsaved licenses
 			return;
@@ -100,7 +90,7 @@ public class LicenseGen {
 	}
 	
 	// add features to a license
-	private void addFeature(String feature) {
+	public void addFeature(String feature) {
 		if (license == null) {
             // TODO show a message saying "Feature cannot be added when there is no license loaded. Use 'loadLicense' or 'newLicense'"
             return;
@@ -122,7 +112,7 @@ public class LicenseGen {
 	// will save the loaded keys to file
 	// uses the generateKeys() method internally
 	
-	private void generate(String algorithm, String sizeString, IOFormat format, String privateKeyFile, String publicKeyFile) {
+	public void generate(String algorithm, String sizeString, IOFormat format, String privateKeyFile, String publicKeyFile) {
 		 if (publicKeyFile.isEmpty() || privateKeyFile.isEmpty()) {
 	            //TODO keypair needs names of the public and private keys to be dumped
 	            return;
@@ -164,7 +154,7 @@ public class LicenseGen {
     }
 	
 	// load private key
-	private void loadPrivateKey(File keyFile, IOFormat format) {
+	public void loadPrivateKey(File keyFile, IOFormat format) {
 		if(keyPair !=null && keyPair.getPair()!=null && keyPair.getPair().getPrivate()!=null) {
 			// override the old key in memory with the new key from file
 			// TODO show message about overriding
@@ -178,21 +168,15 @@ public class LicenseGen {
 			keyPair = merge(keyPair, kpread.readPrivate(format));
 			System.out.println("Private Key Loaded From: "+keyFile.getAbsolutePath());
 			
-		} catch (IOException e) {
+		} catch (IOException | InvalidKeySpecException | NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (InvalidKeySpecException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		}  
 	}
 	
 	// load public key
 	
-	private void loadPublicKey(File keyFile, IOFormat format) {
+	public void loadPublicKey(File keyFile, IOFormat format) {
 		if(keyPair !=null && keyPair.getPair()!=null && keyPair.getPair().getPrivate()!=null) {
 			// override the old key in memory with the new key from file
 			// TODO show message about overriding
@@ -206,21 +190,15 @@ public class LicenseGen {
 			keyPair = merge(keyPair, kpread.readPublic(format));
 			System.out.println("Private Key Loaded From: "+keyFile.getAbsolutePath());
 			
-		} catch (IOException e) {
+		} catch (IOException | InvalidKeySpecException | NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (InvalidKeySpecException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		}  
 	}
 	
 	// digest public key
 	
-	private void digestPublicKey() {
+	public void digestPublicKey() {
 		
 		if (keyPair == null) {
            // TODO show a message that no public key is loaded
@@ -244,7 +222,7 @@ public class LicenseGen {
 
             javaCode.append("--KEY START\nbyte [] key = new byte[] {\n");
             for (int i = 0; i < publicKey.length; i++) {
-                int intVal = ((int) publicKey[i]) & 0xff;
+                int intVal = (publicKey[i]) & 0xff;
                 javaCode.append(String.format("(byte)0x%02X, ", intVal));
                 if (i % 8 == 0) {
                     javaCode.append("\n");
@@ -261,7 +239,7 @@ public class LicenseGen {
 	}
 	
 	// sign license
-	private void signLicense() {
+	public void signLicense() {
 		if (license == null) {
 			// TODO show message to load or create a license
 		} else {
@@ -274,7 +252,7 @@ public class LicenseGen {
 		}
 	}
 	
-	private void verifyLicense() {
+	public void verifyLicense() {
 		if( license == null ){
 			//TODO show message that there is no license to be verified
 			return;
