@@ -18,6 +18,7 @@ import javax0.license3j.License;
 import javax0.license3j.crypto.LicenseKeyPair;
 import javax0.license3j.io.IOFormat;
 import javax0.license3j.io.KeyPairReader;
+import javax0.license3j.io.KeyPairWriter;
 import javax0.license3j.io.LicenseReader;
 import javax0.license3j.io.LicenseWriter;
 
@@ -116,6 +117,36 @@ public class LicenseGen {
 		} catch (NoSuchAlgorithmException e) {
 			throw new IllegalArgumentException("Algorithm " + algorithm + " is not handled by the current version of this application.", e);
 		}
+	}
+	
+	// will save the loaded keys to file
+	// uses the generateKeys() method internally
+	
+	private void generate(String algorithm, String sizeString, IOFormat format, String privateKeyFile, String publicKeyFile) {
+		 if (publicKeyFile.isEmpty() || privateKeyFile.isEmpty()) {
+	            //TODO keypair needs names of the public and private keys to be dumped
+	            return;
+	        }
+		 
+            final int size;
+	        try {
+	            size = Integer.parseInt(sizeString);
+	        } catch (NumberFormatException e) {
+	            //TODO Message: "Option size has to be a positive decimal integer value. " + sizeString + " does not qualify as such."
+	            return;
+	        }
+	        
+	        generateKeys(algorithm, size);
+	        try (KeyPairWriter writer = new KeyPairWriter(new File(privateKeyFile), new File(publicKeyFile))) {
+	            writer.write(keyPair, format);
+	            final String privateKeyPath = new File(privateKeyFile).getAbsolutePath();
+	            final String publicKeyPath = new File(publicKeyFile).getAbsolutePath();
+	            System.out.println("Private key saved to " + privateKeyPath);
+	            System.out.println("Public key saved to " + publicKeyPath);
+	        } catch (IOException e) {
+	        	// TODO 
+	            e.printStackTrace();
+	        }
 	}
 	
 	private LicenseKeyPair merge(LicenseKeyPair oldKp, LicenseKeyPair newKp) {
@@ -257,6 +288,11 @@ public class LicenseGen {
 		} else {
 			System.out.println("License is not properly signed.");
 		}
+	}
+	
+	// should not allow the app to exit if there is a license in memory waiting to be saved
+	public Boolean allowExit() {
+		return !licenseToSave;
 	}
 
 	public static void main(String[] args) {
