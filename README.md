@@ -1,2 +1,2 @@
-# License3jImpl
- Testing The License3j Framework
+# License3j-GUI
+GUI for License3j
