@@ -3,6 +3,8 @@ package license3jtest;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -14,6 +16,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import javax0.license3j.Feature;
+import javax0.license3j.HardwareBinder;
 import javax0.license3j.License;
 import javax0.license3j.crypto.LicenseKeyPair;
 import javax0.license3j.io.IOFormat;
@@ -273,8 +276,18 @@ public class LicenseGen {
 		return !licenseToSave;
 	}
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public static void main(String[] args) throws NoSuchAlgorithmException, SocketException, UnknownHostException {
+//		LicenseGen lg = new LicenseGen();
+//		lg.newLicense();
+//		lg.addFeature("licid:STRING="+new HardwareBinder().getMachineIdString());
+//		lg.addFeature("name:STRING=Eggy");
+//		lg.dumpLicense();
+//		lg.generate("RSA", "2048", IOFormat.BINARY, "eggpr", "eggpl");
+//		lg.signLicense();
+//		lg.digestPublicKey();
+//		lg.verifyLicense();
+//		lg.saveLicense("TestLicense", IOFormat.BINARY);
+//		System.out.println(lg.allowExit());
 
 	}
 
