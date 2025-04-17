@@ -41,6 +41,8 @@ public class LicenseGen {
 	private void newLicense() {
 		if(!licenseToSave) {
 			license = new License();
+		} else {
+			// TODO give a warning that a license in memory needs to be saved first
 		}
 	}
 	
