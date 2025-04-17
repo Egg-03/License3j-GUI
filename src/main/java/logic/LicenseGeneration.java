@@ -1,4 +1,4 @@
-package license3jtest;
+package logic;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -25,7 +25,7 @@ import javax0.license3j.io.KeyPairWriter;
 import javax0.license3j.io.LicenseReader;
 import javax0.license3j.io.LicenseWriter;
 
-public class LicenseGen {
+public class LicenseGeneration {
 
 	private License license;
 	private boolean licenseToSave = false;
@@ -277,17 +277,17 @@ public class LicenseGen {
 	}
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, SocketException, UnknownHostException {
-//		LicenseGen lg = new LicenseGen();
-//		lg.newLicense();
-//		lg.addFeature("licid:STRING="+new HardwareBinder().getMachineIdString());
-//		lg.addFeature("name:STRING=Eggy");
-//		lg.dumpLicense();
-//		lg.generate("RSA", "2048", IOFormat.BINARY, "eggpr", "eggpl");
-//		lg.signLicense();
-//		lg.digestPublicKey();
-//		lg.verifyLicense();
-//		lg.saveLicense("TestLicense", IOFormat.BINARY);
-//		System.out.println(lg.allowExit());
+		LicenseGeneration lg = new LicenseGeneration();
+		lg.newLicense();
+		lg.addFeature("licid:STRING="+new HardwareBinder().getMachineIdString());
+		lg.addFeature("name:STRING=Eggy");
+		lg.dumpLicense();
+		lg.generate("RSA", "2048", IOFormat.BINARY, "eggpr.key", "eggpl.key");
+		lg.signLicense();
+		lg.digestPublicKey();
+		lg.verifyLicense();
+		lg.saveLicense("TestLicense.bin", IOFormat.BINARY);
+		System.out.println(lg.allowExit());
 
 	}
 

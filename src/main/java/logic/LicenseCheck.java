@@ -1,8 +1,9 @@
-package license3jtest;
+package logic;
 
 import java.io.IOException;
 
 import javax0.license3j.License;
+import javax0.license3j.io.IOFormat;
 import javax0.license3j.io.LicenseReader;
 
 public class LicenseCheck {
@@ -50,8 +51,8 @@ public class LicenseCheck {
 		};
 
 	public static void main(String[] args) {
-		try (LicenseReader reader = new LicenseReader("license.bin")) {
-	        License license = reader.read();
+		try (LicenseReader reader = new LicenseReader("TestLicense.bin")) {
+	        License license = reader.read(IOFormat.BINARY);
 	        
 	        if (license.isOK(PUBLIC_KEY)) {
 	            System.out.println("License Verified");
