@@ -13,6 +13,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import app.ui.secondary.InformationUI;
 import javax0.license3j.Feature;
 import javax0.license3j.HardwareBinder;
 import javax0.license3j.License;
@@ -34,14 +35,16 @@ public class LicenseGeneration {
 		if (!licenseToSave) {
 			license = new License();
 		} else {
-			// TODO give a warning that a license in memory needs to be saved first
+			new InformationUI("An unsaved license is detected in memory. Please save the license first.");
+			// TODO also log in a logger
 		}
 	}
 
 	// save license to file
 	public void saveLicense(String licenseName, IOFormat format) throws IOException {
 		if (license == null) {
-			// TODO show a message that there is no license to save
+			new InformationUI("No license in memory.");
+			// TODO also log in a logger
 			return;
 		}
 
@@ -52,23 +55,24 @@ public class LicenseGeneration {
 	}
 
 	// dump license to screen
-	public void dumpLicense() throws IOException {
+	public String dumpLicense() throws IOException {
 		if (license == null) {
-			// TODO do something
-			return;
+			new InformationUI("No license in memory.");
+			// TODO also log in a logger
+			return "";
 		}
 
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); LicenseWriter lw = new LicenseWriter(baos)) {
 			lw.write(license, IOFormat.STRING);
-			System.out.println(new String(baos.toByteArray(), StandardCharsets.UTF_8));
-
+			return new String(baos.toByteArray(), StandardCharsets.UTF_8);
 		}
 	}
 
 	// load an existing license
 	public void loadLicense(File licenseFile, IOFormat format) throws IOException {
 		if (licenseToSave) {
-			// TODO throw a warning message about unsaved licenses
+			new InformationUI("Unsaved license detected in memory.");
+			// TODO also log in a logger
 			return;
 		}
 
@@ -82,8 +86,8 @@ public class LicenseGeneration {
 	// add features to a license
 	public void addFeature(String feature) {
 		if (license == null) {
-			// TODO show a message saying "Feature cannot be added when there is no license
-			// loaded. Use 'loadLicense' or 'newLicense'"
+			new InformationUI("No license in memory. Feature cannot be added. Create or load a license.");
+			// TODO also log in a logger
 			return;
 		}
 
@@ -92,21 +96,17 @@ public class LicenseGeneration {
 	}
 
 	// will generate a private-key public-key pair and load it in memory
-	private void generateKeys(String algorithm, int size) {
-		try {
+	private void generateKeys(String algorithm, int size) throws NoSuchAlgorithmException {
 			keyPair = LicenseKeyPair.Create.from(algorithm, size);
-		} catch (NoSuchAlgorithmException e) {
-			throw new IllegalArgumentException(
-					"Algorithm " + algorithm + " is not handled by the current version of this application.", e);
-		}
 	}
 
 	// will save the loaded keys to file
 	// uses the generateKeys() method internally
 
-	public void generate(String algorithm, String sizeString, IOFormat format, String privateKeyFile, String publicKeyFile) throws IOException {
+	public void generate(String algorithm, String sizeString, IOFormat format, String privateKeyFile, String publicKeyFile) throws IOException, NoSuchAlgorithmException {
 		if (publicKeyFile.isEmpty() || privateKeyFile.isEmpty()) {
-			// TODO keypair needs names of the public and private keys to be dumped
+			new InformationUI("KeyPair needs the names of the keys.");
+			// TODO also log in a logger
 			return;
 		}
 
@@ -114,8 +114,8 @@ public class LicenseGeneration {
 		try {
 			size = Integer.parseInt(sizeString);
 		} catch (NumberFormatException e) {
-			// TODO Message: "Option size has to be a positive decimal integer value. " +
-			// sizeString + " does not qualify as such."
+			new InformationUI(sizeString+" has to be a positive decimal integer value.");
+			// TODO also log in a logger
 			return;
 		}
 
@@ -126,6 +126,7 @@ public class LicenseGeneration {
 			final String publicKeyPath = new File(publicKeyFile).getAbsolutePath();
 			System.out.println("Private key saved to " + privateKeyPath);
 			System.out.println("Public key saved to " + publicKeyPath);
+			// TODO replace with logger
 		}
 	}
 
@@ -147,7 +148,7 @@ public class LicenseGeneration {
 	public void loadPrivateKey(File keyFile, IOFormat format) throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
 		if (keyPair != null && keyPair.getPair() != null && keyPair.getPair().getPrivate() != null) {
 			// override the old key in memory with the new key from file
-			// TODO show message about overriding
+			// TODO logger
 		}
 
 		if (!keyFile.exists()) {
@@ -157,6 +158,7 @@ public class LicenseGeneration {
 		try (KeyPairReader kpread = new KeyPairReader(keyFile)) {
 			keyPair = merge(keyPair, kpread.readPrivate(format));
 			System.out.println("Private Key Loaded From: " + keyFile.getAbsolutePath());
+			// TODO replace with logger
 
 		}
 	}
@@ -176,17 +178,19 @@ public class LicenseGeneration {
 		try (KeyPairReader kpread = new KeyPairReader(keyFile)) {
 			keyPair = merge(keyPair, kpread.readPublic(format));
 			System.out.println("Private Key Loaded From: " + keyFile.getAbsolutePath());
+			// TODO replace with logger
 
 		}
 	}
 
 	// digest public key
 
-	public void digestPublicKey() throws NoSuchAlgorithmException {
+	public String digestPublicKey() throws NoSuchAlgorithmException {
 
 		if (keyPair == null) {
-			// TODO show a message that no public key is loaded
-			return;
+			new InformationUI("No digestable public key loaded.");
+			// TODO also log in a logger
+			return "";
 		}
 
 		byte[] publicKey = keyPair.getPublic();
@@ -213,34 +217,37 @@ public class LicenseGeneration {
 		}
 		javaCode.append("\n};\n---KEY END\n");
 
-		System.out.println(javaCode.toString());
+		return javaCode.toString();
 
 	}
 
 	// sign license
 	public void signLicense() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException {
 		if (license == null) {
-			// TODO show message to load or create a license
+			new InformationUI("No license detected in memory. Load or create a license.");
+			// TODO also log in a logger
 		} else {
-
 			license.sign(keyPair.getPair().getPrivate(), "SHA-512");
-
 		}
 	}
 
 	public void verifyLicense() {
 		if (license == null) {
-			// TODO show message that there is no license to be verified
+			new InformationUI("No license loaded in memory to be verified.");
+			// TODO also log in a logger
 			return;
 		}
 		if (keyPair == null || keyPair.getPair() == null || keyPair.getPair().getPublic() == null) {
-			// TODO There is no public key to verify the license with
+			new InformationUI("No public key loaded in memory to be verified with.");
+			// TODO also log in a logger
 			return;
 		}
 		if (license.isOK(keyPair.getPair().getPublic())) {
-			System.out.println("License is properly signed.");
+			new InformationUI("License is properly signed.");
+			// TODO also log in a logger
 		} else {
-			System.out.println("License is not properly signed.");
+			new InformationUI("License is NOT properly signed.");
+			// TODO also log in a logger
 		}
 	}
 
@@ -257,10 +264,10 @@ public class LicenseGeneration {
 		lg.addFeature("licensedTo:STRING=Eggy");
 		lg.addFeature("companyName:STRING=Wunkus");
 		lg.addFeature("expiryDate:DATE=2028-04-17");
-		lg.dumpLicense();
+		System.out.println(lg.dumpLicense());
 		lg.generate("RSA", "2048", IOFormat.BINARY, "eggpr.key", "eggpl.key");
 		lg.signLicense();
-		lg.digestPublicKey();
+		System.out.println(lg.digestPublicKey());
 		lg.verifyLicense();
 		lg.saveLicense("TestLicense.bin", IOFormat.BINARY);
 		System.out.println(lg.allowExit());
