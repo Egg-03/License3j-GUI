@@ -13,7 +13,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import app.ui.secondary.InformationUI;
+import org.tinylog.Logger;
+
 import javax0.license3j.Feature;
 import javax0.license3j.HardwareBinder;
 import javax0.license3j.License;
@@ -35,16 +36,14 @@ public class LicenseGeneration {
 		if (!licenseToSave) {
 			license = new License();
 		} else {
-			new InformationUI("An unsaved license is detected in memory. Please save the license first.");
-			// TODO also log in a logger
+			Logger.warn("An unsaved license is detected in memory. Please save the license first.");
 		}
 	}
 
 	// save license to file
 	public void saveLicense(String licenseName, IOFormat format) throws IOException {
 		if (license == null) {
-			new InformationUI("No license in memory.");
-			// TODO also log in a logger
+			Logger.error("No license in memory. Please create or load a license");
 			return;
 		}
 
@@ -57,8 +56,7 @@ public class LicenseGeneration {
 	// dump license to screen
 	public String dumpLicense() throws IOException {
 		if (license == null) {
-			new InformationUI("No license in memory.");
-			// TODO also log in a logger
+			Logger.error("No license in memory. Please create or load a license");
 			return "";
 		}
 
@@ -71,8 +69,7 @@ public class LicenseGeneration {
 	// load an existing license
 	public void loadLicense(File licenseFile, IOFormat format) throws IOException {
 		if (licenseToSave) {
-			new InformationUI("Unsaved license detected in memory.");
-			// TODO also log in a logger
+			Logger.warn("Unsaved license detected in memory. Please save the license first.");
 			return;
 		}
 
@@ -86,8 +83,7 @@ public class LicenseGeneration {
 	// add features to a license
 	public void addFeature(String feature) {
 		if (license == null) {
-			new InformationUI("No license in memory. Feature cannot be added. Create or load a license.");
-			// TODO also log in a logger
+			Logger.error("No license in memory. Feature cannot be added. Create or load a license.");
 			return;
 		}
 
@@ -105,8 +101,7 @@ public class LicenseGeneration {
 
 	public void generate(String algorithm, String sizeString, IOFormat format, String privateKeyFile, String publicKeyFile) throws IOException, NoSuchAlgorithmException {
 		if (publicKeyFile.isEmpty() || privateKeyFile.isEmpty()) {
-			new InformationUI("KeyPair needs the names of the keys.");
-			// TODO also log in a logger
+			Logger.error("KeyPair needs the names of the keys.");
 			return;
 		}
 
@@ -114,8 +109,7 @@ public class LicenseGeneration {
 		try {
 			size = Integer.parseInt(sizeString);
 		} catch (NumberFormatException e) {
-			new InformationUI(sizeString+" has to be a positive decimal integer value.");
-			// TODO also log in a logger
+			Logger.error(sizeString+" has to be a positive decimal integer value.");
 			return;
 		}
 
@@ -124,9 +118,8 @@ public class LicenseGeneration {
 			writer.write(keyPair, format);
 			final String privateKeyPath = new File(privateKeyFile).getAbsolutePath();
 			final String publicKeyPath = new File(publicKeyFile).getAbsolutePath();
-			System.out.println("Private key saved to " + privateKeyPath);
-			System.out.println("Public key saved to " + publicKeyPath);
-			// TODO replace with logger
+			Logger.info("Private key saved to " + privateKeyPath);
+			Logger.info("Public key saved to " + publicKeyPath);
 		}
 	}
 
@@ -147,19 +140,17 @@ public class LicenseGeneration {
 	// load private key
 	public void loadPrivateKey(File keyFile, IOFormat format) throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
 		if (keyPair != null && keyPair.getPair() != null && keyPair.getPair().getPrivate() != null) {
-			// override the old key in memory with the new key from file
-			// TODO logger
+			Logger.info("Private Key in memory will be overriden by a new key loaded from a file.");
 		}
 
 		if (!keyFile.exists()) {
+			Logger.error("Private Key file does not exist.");
 			return;
 		}
 
 		try (KeyPairReader kpread = new KeyPairReader(keyFile)) {
 			keyPair = merge(keyPair, kpread.readPrivate(format));
-			System.out.println("Private Key Loaded From: " + keyFile.getAbsolutePath());
-			// TODO replace with logger
-
+			Logger.info("Private Key Loaded From: " + keyFile.getAbsolutePath());
 		}
 	}
 
@@ -167,18 +158,17 @@ public class LicenseGeneration {
 
 	public void loadPublicKey(File keyFile, IOFormat format) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
 		if (keyPair != null && keyPair.getPair() != null && keyPair.getPair().getPrivate() != null) {
-			// override the old key in memory with the new key from file
-			// TODO show message about overriding
+			Logger.info("Public Key in memory will be overriden by a new key loaded from a file.");
 		}
 
 		if (!keyFile.exists()) {
+			Logger.error("Public Key file does not exist.");
 			return;
 		}
 
 		try (KeyPairReader kpread = new KeyPairReader(keyFile)) {
 			keyPair = merge(keyPair, kpread.readPublic(format));
-			System.out.println("Private Key Loaded From: " + keyFile.getAbsolutePath());
-			// TODO replace with logger
+			Logger.info("Public Key Loaded From: " + keyFile.getAbsolutePath());
 
 		}
 	}
@@ -188,8 +178,7 @@ public class LicenseGeneration {
 	public String digestPublicKey() throws NoSuchAlgorithmException {
 
 		if (keyPair == null) {
-			new InformationUI("No digestable public key loaded.");
-			// TODO also log in a logger
+			Logger.error("No digestable public key loaded.");
 			return "";
 		}
 
@@ -224,8 +213,7 @@ public class LicenseGeneration {
 	// sign license
 	public void signLicense() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException {
 		if (license == null) {
-			new InformationUI("No license detected in memory. Load or create a license.");
-			// TODO also log in a logger
+			Logger.error("No license detected in memory. Load or create a license.");
 		} else {
 			license.sign(keyPair.getPair().getPrivate(), "SHA-512");
 		}
@@ -233,21 +221,17 @@ public class LicenseGeneration {
 
 	public void verifyLicense() {
 		if (license == null) {
-			new InformationUI("No license loaded in memory to be verified.");
-			// TODO also log in a logger
+			Logger.error("No license loaded in memory to be verified.");
 			return;
 		}
 		if (keyPair == null || keyPair.getPair() == null || keyPair.getPair().getPublic() == null) {
-			new InformationUI("No public key loaded in memory to be verified with.");
-			// TODO also log in a logger
+			Logger.error("No public key loaded in memory to be verified with.");
 			return;
 		}
 		if (license.isOK(keyPair.getPair().getPublic())) {
-			new InformationUI("License is properly signed.");
-			// TODO also log in a logger
+			Logger.info("License is properly signed.");
 		} else {
-			new InformationUI("License is NOT properly signed.");
-			// TODO also log in a logger
+			Logger.warn("License is NOT properly signed.");
 		}
 	}
 
@@ -264,13 +248,13 @@ public class LicenseGeneration {
 		lg.addFeature("licensedTo:STRING=Eggy");
 		lg.addFeature("companyName:STRING=Wunkus");
 		lg.addFeature("expiryDate:DATE=2028-04-17");
-		System.out.println(lg.dumpLicense());
+		Logger.info(lg.dumpLicense());
 		lg.generate("RSA", "2048", IOFormat.BINARY, "eggpr.key", "eggpl.key");
 		lg.signLicense();
-		System.out.println(lg.digestPublicKey());
+		Logger.info(lg.digestPublicKey());
 		lg.verifyLicense();
 		lg.saveLicense("TestLicense.bin", IOFormat.BINARY);
-		System.out.println(lg.allowExit());
+		Logger.info(lg.allowExit());
 
 	}
 
