@@ -279,8 +279,10 @@ public class LicenseGeneration {
 	public static void main(String[] args) throws NoSuchAlgorithmException, SocketException, UnknownHostException {
 		LicenseGeneration lg = new LicenseGeneration();
 		lg.newLicense();
-		lg.addFeature("licid:STRING="+new HardwareBinder().getMachineIdString());
-		lg.addFeature("name:STRING=Eggy");
+		lg.addFeature("licenseId:UUID="+new HardwareBinder().getMachineId());
+		lg.addFeature("licensedTo:STRING=Eggy");
+		lg.addFeature("companyName:STRING=Wunkus");
+		lg.addFeature("expiryDate:DATE=2028-04-17");
 		lg.dumpLicense();
 		lg.generate("RSA", "2048", IOFormat.BINARY, "eggpr.key", "eggpl.key");
 		lg.signLicense();
