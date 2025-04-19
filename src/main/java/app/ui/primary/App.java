@@ -24,11 +24,11 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JComboBox;
+import java.awt.Window.Type;
 
 public class App {
 
 	private JFrame frmLicensejGui;
-	private JTextField textField_3;
 
 	/**
 	 * Launch the application.
@@ -58,8 +58,9 @@ public class App {
 	 */
 	private void initialize() {
 		frmLicensejGui = new JFrame();
+		frmLicensejGui.setResizable(false);
 		frmLicensejGui.setTitle("License3J GUI");
-		frmLicensejGui.setBounds(100, 100, 801, 463);
+		frmLicensejGui.setBounds(100, 100, 900, 480);
 		frmLicensejGui.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frmLicensejGui.getContentPane().setLayout(new BorderLayout(0, 0));
 		
@@ -148,95 +149,85 @@ public class App {
 		licenseFunctionPanel.setLayout(gl_licenseFunctionPanel);
 		
 		
-		JPanel featureAndKeysPanel = new JPanel();
-		featureAndKeysPanel.setPreferredSize(new Dimension(licensePanel.getWidth()/3, licensePanel.getHeight()));
-		featureAndKeysPanel.setBorder(new TitledBorder("License Feature and Sign Keys"));
-		licensePanel.add(featureAndKeysPanel);
+		JPanel featurePanel = new JPanel();
+		featurePanel.setPreferredSize(new Dimension(licensePanel.getWidth()/3, licensePanel.getHeight()));
+		featurePanel.setBorder(new TitledBorder("License Feature"));
+		licensePanel.add(featurePanel);
 		
-		JLabel lblNewLabel = new JLabel("Add Features");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setFont(new Font("Monospaced", Font.PLAIN, 11));
-		
-		JLabel lblNewLabel_1 = new JLabel("Name");
+		JLabel lblNewLabel = new JLabel("F.Name");
 		JTextField textField_1 = new JTextField();
 		textField_1.setColumns(10);
 		
-		JLabel lblNewLabel_2 = new JLabel("Type");
+		JLabel lblNewLabel_1 = new JLabel("F.Type");
 		JComboBox<String> comboBox = new JComboBox<>();
 		
-		JLabel lblNewLabel_3 = new JLabel("Feature");
+		JLabel lblNewLabel_2 = new JLabel("F.Content");
 		JTextField textField_2 = new JTextField();
 		textField_2.setColumns(10);
 		
 		JButton btnNewButton_4 = new JButton("Add Feature");
 		
-		JLabel lblNewLabel_4 = new JLabel("Machine ID");
-		
-		textField_3 = new JTextField();
+		JLabel lblNewLabel_3 = new JLabel("MachineID");
+		JTextField textField_3 = new JTextField();
 		textField_3.setEditable(false);
-		textField_3.setFont(new Font("Monospaced", Font.PLAIN, 9));
 		textField_3.setColumns(10);
 		
-		JButton btnNewButton_5 = new JButton("Add Machine ID to Feature");
-		GroupLayout gl_featureAndKeysPanel = new GroupLayout(featureAndKeysPanel);
+		JButton btnNewButton_5 = new JButton("Add MachineID to Feature");
+		
+		GroupLayout gl_featureAndKeysPanel = new GroupLayout(featurePanel);
 		gl_featureAndKeysPanel.setHorizontalGroup(
-			gl_featureAndKeysPanel.createParallelGroup(Alignment.LEADING)
+			gl_featureAndKeysPanel.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_featureAndKeysPanel.createSequentialGroup()
+					.addContainerGap()
 					.addGroup(gl_featureAndKeysPanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+						.addComponent(btnNewButton_5, GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
 						.addGroup(gl_featureAndKeysPanel.createSequentialGroup()
-							.addGroup(gl_featureAndKeysPanel.createParallelGroup(Alignment.TRAILING, false)
-								.addComponent(btnNewButton_5, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addGroup(Alignment.LEADING, gl_featureAndKeysPanel.createSequentialGroup()
-									.addComponent(lblNewLabel_4)
-									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addComponent(textField_3))
-								.addComponent(btnNewButton_4, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addGroup(Alignment.LEADING, gl_featureAndKeysPanel.createSequentialGroup()
-									.addGroup(gl_featureAndKeysPanel.createParallelGroup(Alignment.LEADING)
-										.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE)
-										.addComponent(lblNewLabel_1))
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addGroup(gl_featureAndKeysPanel.createParallelGroup(Alignment.LEADING)
-										.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 68, GroupLayout.PREFERRED_SIZE)
-										.addComponent(lblNewLabel_2))
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addGroup(gl_featureAndKeysPanel.createParallelGroup(Alignment.LEADING)
-										.addComponent(lblNewLabel_3)
-										.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))))
-							.addGap(11)))
+							.addComponent(lblNewLabel_3)
+							.addGap(18)
+							.addComponent(textField_3, GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE))
+						.addComponent(btnNewButton_4, GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
+						.addGroup(gl_featureAndKeysPanel.createSequentialGroup()
+							.addGroup(gl_featureAndKeysPanel.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblNewLabel_2)
+								.addComponent(lblNewLabel)
+								.addComponent(lblNewLabel_1))
+							.addGap(18)
+							.addGroup(gl_featureAndKeysPanel.createParallelGroup(Alignment.LEADING)
+								.addComponent(comboBox, Alignment.TRAILING, 0, 164, Short.MAX_VALUE)
+								.addComponent(textField_2, GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+								.addComponent(textField_1, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE))))
 					.addContainerGap())
 		);
 		gl_featureAndKeysPanel.setVerticalGroup(
 			gl_featureAndKeysPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_featureAndKeysPanel.createSequentialGroup()
-					.addComponent(lblNewLabel)
+					.addGroup(gl_featureAndKeysPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblNewLabel)
+						.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_featureAndKeysPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblNewLabel_1)
+						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_featureAndKeysPanel.createParallelGroup(Alignment.LEADING)
 						.addComponent(lblNewLabel_2)
-						.addComponent(lblNewLabel_3))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_featureAndKeysPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
-						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
 						.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnNewButton_4)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGap(18)
 					.addGroup(gl_featureAndKeysPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblNewLabel_4, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblNewLabel_3)
 						.addComponent(textField_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnNewButton_5)
-					.addContainerGap(51, Short.MAX_VALUE))
+					.addContainerGap(24, Short.MAX_VALUE))
 		);
-		featureAndKeysPanel.setLayout(gl_featureAndKeysPanel);
+		featurePanel.setLayout(gl_featureAndKeysPanel);
 		
-		JPanel signAndVerifyPanel = new JPanel();
-		signAndVerifyPanel.setPreferredSize(new Dimension(licensePanel.getWidth()/3, licensePanel.getHeight()));
-		signAndVerifyPanel.setBorder(new TitledBorder("Sign and Verify"));
-		licensePanel.add(signAndVerifyPanel);
+		JPanel keyGenAndSignPanel = new JPanel();
+		keyGenAndSignPanel.setPreferredSize(new Dimension(licensePanel.getWidth()/3, licensePanel.getHeight()));
+		keyGenAndSignPanel.setBorder(new TitledBorder("Generate Sign Keys, Sign and Verify License"));
+		licensePanel.add(keyGenAndSignPanel);
 		
 	}
 }
