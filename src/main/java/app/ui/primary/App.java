@@ -5,8 +5,12 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.security.NoSuchAlgorithmException;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -20,8 +24,11 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
+
+import org.tinylog.Logger;
+
+import javax0.license3j.HardwareBinder;
 import net.miginfocom.swing.MigLayout;
-import javax.swing.DefaultComboBoxModel;
 
 public class App {
 
@@ -166,14 +173,22 @@ public class App {
 		JLabel machineIdLabel = new JLabel("Machine ID");
 		featurePanel.add(machineIdLabel, "cell 0 5,alignx trailing");
 		
-		JTextField machineIdTf = new JTextField();
-		machineIdTf.setFont(new Font("Monospaced", Font.PLAIN, 10));
+		JTextField machineIdTf =  new JTextField();
+		machineIdTf.setFont(new Font("Monospaced", Font.PLAIN, 11));
 		machineIdTf.setEditable(false);
 		featurePanel.add(machineIdTf, "cell 1 5,growx");
 		machineIdTf.setColumns(10);
 		
 		JButton addMachineIdBtn = new JButton("Add Machine ID to Feature");
 		featurePanel.add(addMachineIdBtn, "cell 0 6 2 1,growx");
+		
+		try {
+			machineIdTf.setText(new HardwareBinder().getMachineIdString());
+		} catch (NoSuchAlgorithmException | SocketException | UnknownHostException e) {
+			machineIdTf.setText("N/A");
+			Logger.error("MachineID could not be retrieved"+e);
+			addMachineIdBtn.setEnabled(false);
+		}
 		
 		JPanel keygenPanel = new JPanel();
 		keygenPanel.setPreferredSize(new Dimension(licensePanel.getWidth()/3, licensePanel.getHeight()));
