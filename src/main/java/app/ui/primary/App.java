@@ -21,6 +21,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 import net.miginfocom.swing.MigLayout;
+import javax.swing.DefaultComboBoxModel;
 
 public class App {
 
@@ -50,6 +51,7 @@ public class App {
 		mainframe = new JFrame();
 		mainframe.setTitle("License3J GUI");
 		mainframe.setBounds(100, 100, 945, 495);
+		mainframe.setLocationRelativeTo(null);
 		mainframe.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		mainframe.getContentPane().setLayout(new BorderLayout(0, 0));
 		
@@ -95,30 +97,40 @@ public class App {
 		licenseFunctionPanel.setPreferredSize(new Dimension(licensePanel.getWidth()/3, licensePanel.getHeight()));
 		licenseFunctionPanel.setBorder(new TitledBorder("License Functions"));
 		licensePanel.add(licenseFunctionPanel);
-		licenseFunctionPanel.setLayout(new MigLayout("filly", "[][grow]", "[][][][][][][]"));
+		licenseFunctionPanel.setLayout(new MigLayout("filly", "[][grow][grow]", "[][][][][][][][]"));
 		
 		JButton newLicenseBtn = new JButton("New License");
-		licenseFunctionPanel.add(newLicenseBtn, "cell 0 0 2 1,growx");
+		licenseFunctionPanel.add(newLicenseBtn, "cell 0 0 3 1,growx");
 		
 		JButton loadLicenseBtn = new JButton("Load License");
-		licenseFunctionPanel.add(loadLicenseBtn, "cell 0 1,growy");
+		licenseFunctionPanel.add(loadLicenseBtn, "cell 0 1,aligny center");
+		
+		JComboBox<String> loadedLicenseTypeComboBox = new JComboBox<>();
+		loadedLicenseTypeComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
+		loadedLicenseTypeComboBox.setModel(new DefaultComboBoxModel<>(new String[] {"BINARY", "BASE64", "TEXT"}));
+		licenseFunctionPanel.add(loadedLicenseTypeComboBox, "cell 1 1,growx,aligny center");
 		
 		JTextField loadedLicenseTf = new JTextField();
 		loadedLicenseTf.setEditable(false);
-		licenseFunctionPanel.add(loadedLicenseTf, "cell 1 1,grow");
+		licenseFunctionPanel.add(loadedLicenseTf, "cell 2 1,growx,aligny center");
 		loadedLicenseTf.setColumns(10);
 		
 		JButton displayLicenseBtn = new JButton("Display License Information");
-		licenseFunctionPanel.add(displayLicenseBtn, "cell 0 3 2 1,growx");
+		licenseFunctionPanel.add(displayLicenseBtn, "cell 0 3 3 1,growx");
 		
 		JButton signLicenseBtn = new JButton("Sign");
 		licenseFunctionPanel.add(signLicenseBtn, "cell 0 5");
 		
 		JButton verifyLicenseBtn = new JButton("Verify");
-		licenseFunctionPanel.add(verifyLicenseBtn, "cell 1 5,alignx right");
+		licenseFunctionPanel.add(verifyLicenseBtn, "cell 2 5,alignx right");
 		
 		JButton saveLicenseBtn = new JButton("Save License");
 		licenseFunctionPanel.add(saveLicenseBtn, "cell 0 7 2 1,growx");
+		
+		JComboBox<String> saveLicenseTypeComboBox = new JComboBox<>();
+		saveLicenseTypeComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
+		saveLicenseTypeComboBox.setModel(new DefaultComboBoxModel<>(new String[] {"BINARY", "BASE64", "TEXT"}));
+		licenseFunctionPanel.add(saveLicenseTypeComboBox, "cell 2 7,growx,aligny center");
 		
 		JPanel featurePanel = new JPanel();
 		featurePanel.setPreferredSize(new Dimension(licensePanel.getWidth()/3, licensePanel.getHeight()));
@@ -137,6 +149,8 @@ public class App {
 		featurePanel.add(featureTypeLabel, "cell 0 1");
 		
 		JComboBox<String> featureTypeComboBox = new JComboBox<>();
+		featureTypeComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
+		featureTypeComboBox.setModel(new DefaultComboBoxModel<>(new String[] {"STRING", "BINARY", "BYTE", "SHORT", "INT", "LONG", "FLOAT", "DOUBLE", "BIGINTEGER", "BIGDECIMAL", "DATE", "UUID"}));
 		featurePanel.add(featureTypeComboBox, "cell 1 1,growx,aligny center");
 		
 		JLabel featureContentLabel = new JLabel("F.Content");
@@ -153,6 +167,7 @@ public class App {
 		featurePanel.add(machineIdLabel, "cell 0 5,alignx trailing");
 		
 		JTextField machineIdTf = new JTextField();
+		machineIdTf.setFont(new Font("Monospaced", Font.PLAIN, 10));
 		machineIdTf.setEditable(false);
 		featurePanel.add(machineIdTf, "cell 1 5,growx");
 		machineIdTf.setColumns(10);
@@ -164,7 +179,7 @@ public class App {
 		keygenPanel.setPreferredSize(new Dimension(licensePanel.getWidth()/3, licensePanel.getHeight()));
 		keygenPanel.setBorder(new TitledBorder("Generate or Load keys"));
 		licensePanel.add(keygenPanel);
-		keygenPanel.setLayout(new MigLayout("filly", "[][grow, fill][grow, fill]", "[][][][][][][][]"));
+		keygenPanel.setLayout(new MigLayout("filly", "[][grow,fill][grow,fill]", "[][][][][][][][]"));
 		
 		JLabel algoLabel = new JLabel("Algorithm");
 		keygenPanel.add(algoLabel, "cell 0 0");
@@ -176,14 +191,17 @@ public class App {
 		keygenPanel.add(keyFormatLabel, "cell 2 0");
 		
 		JComboBox<String> algoComboBox = new JComboBox<>();
+		algoComboBox.setModel(new DefaultComboBoxModel<>(new String[] {"RSA", "ECB", "PKCS1Padding"}));
 		algoComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
 		keygenPanel.add(algoComboBox, "cell 0 1,growx");
 		
 		JComboBox<String> algoSizeComboBox = new JComboBox<>();
+		algoSizeComboBox.setModel(new DefaultComboBoxModel<>(new String[] {"2048", "1024"}));
 		algoSizeComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
 		keygenPanel.add(algoSizeComboBox, "cell 1 1,growx");
 		
 		JComboBox<String> keyFormatComboBox = new JComboBox<>();
+		keyFormatComboBox.setModel(new DefaultComboBoxModel<>(new String[] {"BINARY", "BASE64"}));
 		keyFormatComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
 		keygenPanel.add(keyFormatComboBox, "cell 2 1,growx");
 		
@@ -207,17 +225,29 @@ public class App {
 		JButton loadPrivateKeyBtn = new JButton("Load Private Key");
 		keygenPanel.add(loadPrivateKeyBtn, "cell 0 6,growx,aligny center");
 		
+		JComboBox<String> loadedPrivateKeyTypeComboBox = new JComboBox<>();
+		loadedPrivateKeyTypeComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
+		loadedPrivateKeyTypeComboBox.setModel(new DefaultComboBoxModel<>(new String[] {"BINARY", "BASE64"}));
+		keygenPanel.add(loadedPrivateKeyTypeComboBox, "cell 1 6,growx,aligny center");
+		
 		JTextField loadedPrivateKeyNameTf = new JTextField();
+		loadedPrivateKeyNameTf.setFont(new Font("Monospaced", Font.PLAIN, 9));
 		loadedPrivateKeyNameTf.setEditable(false);
-		keygenPanel.add(loadedPrivateKeyNameTf, "cell 1 6 2 1,grow");
+		keygenPanel.add(loadedPrivateKeyNameTf, "cell 2 6,grow");
 		loadedPrivateKeyNameTf.setColumns(10);
 		
 		JButton loadPublicKeyBtn = new JButton("Load Public Key");
 		keygenPanel.add(loadPublicKeyBtn, "cell 0 7,growx,aligny center");
 		
+		JComboBox<String> loadedPublicKeyTypeComboBox = new JComboBox<>();
+		loadedPublicKeyTypeComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
+		loadedPublicKeyTypeComboBox.setModel(new DefaultComboBoxModel<>(new String[] {"BINARY", "BASE64"}));
+		keygenPanel.add(loadedPublicKeyTypeComboBox, "cell 1 7,growx,aligny center");
+		
 		JTextField loadedPublicKeyNameTf = new JTextField();
+		loadedPublicKeyNameTf.setFont(new Font("Monospaced", Font.PLAIN, 9));
 		loadedPublicKeyNameTf.setEditable(false);
-		keygenPanel.add(loadedPublicKeyNameTf, "cell 1 7 2 1,grow");
+		keygenPanel.add(loadedPublicKeyNameTf, "cell 2 7,grow");
 		loadedPublicKeyNameTf.setColumns(10);
 	}
 }
