@@ -5,9 +5,14 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -17,6 +22,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -25,14 +31,18 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
+import org.apache.commons.io.input.Tailer;
+import org.apache.commons.io.input.TailerListener;
 import org.tinylog.Logger;
 
+import app.utilities.LogListener;
 import javax0.license3j.HardwareBinder;
 import net.miginfocom.swing.MigLayout;
 
 public class App {
 
 	private JFrame mainframe;
+	private Tailer logTailer;
 
 	/**
 	 * Launch the application.
@@ -59,7 +69,22 @@ public class App {
 		mainframe.setTitle("License3J GUI");
 		mainframe.setBounds(100, 100, 945, 495);
 		mainframe.setLocationRelativeTo(null);
-		mainframe.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		mainframe.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		WindowAdapter exitListener = new WindowAdapter() {
+
+		    @Override
+		    public void windowClosing(WindowEvent e) {
+		        int confirm = JOptionPane.showOptionDialog(
+		             null, "Are you sure you want to close the application?", 
+		             "Exit Confirmation", JOptionPane.YES_NO_OPTION, 
+		             JOptionPane.QUESTION_MESSAGE, null, null, null);
+		        if (confirm == 0) {
+		        	logTailer.close();
+		           System.exit(0);
+		        }
+		    }
+		};
+		mainframe.addWindowListener(exitListener);
 		mainframe.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		addMenu();
@@ -89,9 +114,20 @@ public class App {
 		logPanel.add(scrollPane);
 		
 		JTextArea logtextArea = new JTextArea();
+		logtextArea.setLineWrap(true);
 		logtextArea.setEditable(false);
 		logtextArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		scrollPane.setViewportView(logtextArea);	
+		
+		TailerListener tl = new LogListener(logtextArea);
+		logTailer = Tailer.builder()
+				.setFile(new File("logs/latest.log"))
+				.setCharset(Charset.defaultCharset())
+				.setTailerListener(tl)
+				.setDelayDuration(Duration.ofSeconds(1))
+				.setReOpen(true)
+				.get();
+		
 	}
 
 	private void addLicensePanel() {
