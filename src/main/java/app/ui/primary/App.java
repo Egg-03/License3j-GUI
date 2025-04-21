@@ -18,6 +18,7 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -35,6 +36,7 @@ import org.apache.commons.io.input.Tailer;
 import org.apache.commons.io.input.TailerListener;
 import org.tinylog.Logger;
 
+import app.logic.LicenseGeneration;
 import app.utilities.LogListener;
 import javax0.license3j.HardwareBinder;
 import javax0.license3j.io.IOFormat;
@@ -44,6 +46,7 @@ public class App {
 
 	private JFrame mainframe;
 	private Tailer logTailer;
+	private final LicenseGeneration lg = new LicenseGeneration();
 
 	/**
 	 * Launch the application.
@@ -82,7 +85,11 @@ public class App {
 		        if (confirm == 0) {
 		        	if(logTailer!=null)
 		        		logTailer.close();
-		           System.exit(0);
+		        	
+		        	if(Boolean.FALSE.equals(lg.allowExit())) 
+		        		JOptionPane.showMessageDialog(mainframe, "WARNING: Unsaved License Detected. Please save before closing");
+		        	else
+		        		System.exit(0);
 		        }
 		    }
 		};
@@ -146,36 +153,59 @@ public class App {
 		
 		JButton newLicenseBtn = new JButton("New License");
 		licenseFunctionPanel.add(newLicenseBtn, "cell 0 0 3 1,growx");
+		newLicenseBtn.addActionListener(e->new NewLicense(lg).execute());
 		
 		JButton loadLicenseBtn = new JButton("Load License");
-		licenseFunctionPanel.add(loadLicenseBtn, "cell 0 1,aligny center");
+		licenseFunctionPanel.add(loadLicenseBtn, "cell 0 1,growx,aligny center");
 		
 		JComboBox<IOFormat> loadedLicenseTypeComboBox = new JComboBox<>();
 		loadedLicenseTypeComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
 		loadedLicenseTypeComboBox.setModel(new DefaultComboBoxModel<>(new IOFormat[] {IOFormat.BINARY, IOFormat.BASE64, IOFormat.STRING}));
 		licenseFunctionPanel.add(loadedLicenseTypeComboBox, "cell 1 1,growx,aligny center");
 		
-		JTextField loadedLicenseTf = new JTextField();
-		loadedLicenseTf.setEditable(false);
-		licenseFunctionPanel.add(loadedLicenseTf, "cell 2 1,growx,aligny center");
-		loadedLicenseTf.setColumns(10);
+		JTextField loadedLicenseStatusTf = new JTextField();
+		loadedLicenseStatusTf.setFont(new Font("Monospaced", Font.PLAIN, 11));
+		loadedLicenseStatusTf.setEditable(false);
+		licenseFunctionPanel.add(loadedLicenseStatusTf, "cell 2 1,growx,aligny center");
+		loadedLicenseStatusTf.setColumns(10);
+		
+		loadLicenseBtn.addActionListener(e->{
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			fileChooser.setMultiSelectionEnabled(false);
+			int option = fileChooser.showOpenDialog(mainframe);
+
+			if(option == JFileChooser.APPROVE_OPTION){
+				new LoadLicense(lg, (IOFormat) loadedLicenseTypeComboBox.getSelectedItem(), loadedLicenseStatusTf, fileChooser.getSelectedFile()).execute();
+			} 
+		});
 		
 		JButton displayLicenseBtn = new JButton("Display License Information");
 		licenseFunctionPanel.add(displayLicenseBtn, "cell 0 3 3 1,growx");
+		displayLicenseBtn.addActionListener(e->new DisplayLicense(lg).execute());
 		
 		JButton signLicenseBtn = new JButton("Sign");
 		licenseFunctionPanel.add(signLicenseBtn, "cell 0 5");
+		signLicenseBtn.addActionListener(e->new SignLicense(lg).execute());
 		
 		JButton verifyLicenseBtn = new JButton("Verify");
 		licenseFunctionPanel.add(verifyLicenseBtn, "cell 2 5,alignx right");
+		verifyLicenseBtn.addActionListener(e->new VerifyLicense(lg).execute());
 		
 		JButton saveLicenseBtn = new JButton("Save License");
-		licenseFunctionPanel.add(saveLicenseBtn, "cell 0 7 2 1,growx");
+		licenseFunctionPanel.add(saveLicenseBtn, "cell 0 7,growx,aligny center");
 		
 		JComboBox<IOFormat> saveLicenseTypeComboBox = new JComboBox<>();
 		saveLicenseTypeComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
 		saveLicenseTypeComboBox.setModel(new DefaultComboBoxModel<>(new IOFormat[] {IOFormat.BINARY, IOFormat.BASE64, IOFormat.STRING}));
-		licenseFunctionPanel.add(saveLicenseTypeComboBox, "cell 2 7,growx,aligny center");
+		licenseFunctionPanel.add(saveLicenseTypeComboBox, "cell 1 7,growx,aligny center");
+		
+		JTextField licenseNameToSaveTf = new JTextField();
+		licenseNameToSaveTf.setFont(new Font("Monospaced", Font.PLAIN, 11));
+		licenseFunctionPanel.add(licenseNameToSaveTf, "cell 2 7,growx,aligny center");
+		licenseNameToSaveTf.setColumns(10);
+		
+		saveLicenseBtn.addActionListener(e->new SaveLicense(lg, licenseNameToSaveTf.getText(), (IOFormat) saveLicenseTypeComboBox.getSelectedItem()).execute());
 		
 		JPanel featurePanel = new JPanel();
 		featurePanel.setPreferredSize(new Dimension(licensePanel.getWidth()/3, licensePanel.getHeight()));
@@ -207,6 +237,7 @@ public class App {
 		
 		JButton addFeatureBtn = new JButton("Add Feature");
 		featurePanel.add(addFeatureBtn, "cell 0 3 2 1,growx");
+		addFeatureBtn.addActionListener(e-> new AddFeatureToLicense(lg, featureNameTf.getText(), (String) featureTypeComboBox.getSelectedItem(), featureContentTf.getText()).execute());
 		
 		JLabel machineIdLabel = new JLabel("Machine ID");
 		featurePanel.add(machineIdLabel, "cell 0 5,alignx trailing");
@@ -219,6 +250,7 @@ public class App {
 		
 		JButton addMachineIdBtn = new JButton("Add Machine ID to Feature");
 		featurePanel.add(addMachineIdBtn, "cell 0 6 2 1,growx");
+		addMachineIdBtn.addActionListener(e-> new AddFeatureToLicense(lg, "licenseId", "UUID", machineIdTf.getText()).execute());
 		
 		try {
 			machineIdTf.setText(new HardwareBinder().getMachineIdString());
@@ -273,7 +305,12 @@ public class App {
 		publicKeyNameTf.setColumns(10);
 		
 		JButton generateKeyBtn = new JButton("Generate Keys");
-		keygenPanel.add(generateKeyBtn, "cell 0 4 3 1,growx");
+		keygenPanel.add(generateKeyBtn, "cell 0 4,growx");
+		generateKeyBtn.addActionListener(e-> new GenerateKeys(lg, (String)algoComboBox.getSelectedItem(), (String)algoSizeComboBox.getSelectedItem(), (IOFormat)keyFormatComboBox.getSelectedItem(), privateKeyNameTf.getText(), publicKeyNameTf.getText()).execute());
+		
+		JButton publicKeyDigestBtn = new JButton("Digest Public Key");
+		keygenPanel.add(publicKeyDigestBtn, "cell 1 4 2 1");
+		publicKeyDigestBtn.addActionListener(e->new DigestPublicKey(lg).execute());
 		
 		JButton loadPrivateKeyBtn = new JButton("Load Private Key");
 		keygenPanel.add(loadPrivateKeyBtn, "cell 0 6,growx,aligny center");
@@ -283,11 +320,11 @@ public class App {
 		loadedPrivateKeyTypeComboBox.setModel(new DefaultComboBoxModel<>(new IOFormat[] {IOFormat.BINARY, IOFormat.BASE64}));
 		keygenPanel.add(loadedPrivateKeyTypeComboBox, "cell 1 6,growx,aligny center");
 		
-		JTextField loadedPrivateKeyNameTf = new JTextField();
-		loadedPrivateKeyNameTf.setFont(new Font("Monospaced", Font.PLAIN, 9));
-		loadedPrivateKeyNameTf.setEditable(false);
-		keygenPanel.add(loadedPrivateKeyNameTf, "cell 2 6,grow");
-		loadedPrivateKeyNameTf.setColumns(10);
+		JTextField loadedPrivateKeyStatusTf = new JTextField();
+		loadedPrivateKeyStatusTf.setFont(new Font("Monospaced", Font.PLAIN, 11));
+		loadedPrivateKeyStatusTf.setEditable(false);
+		keygenPanel.add(loadedPrivateKeyStatusTf, "cell 2 6,grow");
+		loadedPrivateKeyStatusTf.setColumns(10);
 		
 		JButton loadPublicKeyBtn = new JButton("Load Public Key");
 		keygenPanel.add(loadPublicKeyBtn, "cell 0 7,growx,aligny center");
@@ -297,10 +334,32 @@ public class App {
 		loadedPublicKeyTypeComboBox.setModel(new DefaultComboBoxModel<>(new IOFormat[] {IOFormat.BINARY, IOFormat.BASE64}));
 		keygenPanel.add(loadedPublicKeyTypeComboBox, "cell 1 7,growx,aligny center");
 		
-		JTextField loadedPublicKeyNameTf = new JTextField();
-		loadedPublicKeyNameTf.setFont(new Font("Monospaced", Font.PLAIN, 9));
-		loadedPublicKeyNameTf.setEditable(false);
-		keygenPanel.add(loadedPublicKeyNameTf, "cell 2 7,grow");
-		loadedPublicKeyNameTf.setColumns(10);
+		JTextField loadedPublicKeyStatusTf = new JTextField();
+		loadedPublicKeyStatusTf.setFont(new Font("Monospaced", Font.PLAIN, 11));
+		loadedPublicKeyStatusTf.setEditable(false);
+		keygenPanel.add(loadedPublicKeyStatusTf, "cell 2 7,grow");
+		loadedPublicKeyStatusTf.setColumns(10);
+		
+		loadPrivateKeyBtn.addActionListener(e->{
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			fileChooser.setMultiSelectionEnabled(false);
+			int option = fileChooser.showOpenDialog(mainframe);
+
+			if(option == JFileChooser.APPROVE_OPTION){
+				new LoadPrivateKey(lg, (IOFormat)loadedPrivateKeyTypeComboBox.getSelectedItem(), loadedPrivateKeyStatusTf, fileChooser.getSelectedFile()).execute();
+			} 
+		});
+		
+		loadPublicKeyBtn.addActionListener(e->{
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			fileChooser.setMultiSelectionEnabled(false);
+			int option = fileChooser.showOpenDialog(mainframe);
+
+			if(option == JFileChooser.APPROVE_OPTION){
+				new LoadPublicKey(lg, (IOFormat)loadedPublicKeyTypeComboBox.getSelectedItem(), loadedPublicKeyStatusTf, fileChooser.getSelectedFile()).execute();
+			} 
+		});
 	}
 }

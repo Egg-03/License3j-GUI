@@ -16,7 +16,6 @@ import javax.crypto.NoSuchPaddingException;
 import org.tinylog.Logger;
 
 import javax0.license3j.Feature;
-import javax0.license3j.HardwareBinder;
 import javax0.license3j.License;
 import javax0.license3j.crypto.LicenseKeyPair;
 import javax0.license3j.io.IOFormat;
@@ -35,6 +34,7 @@ public class LicenseGeneration {
 	public void newLicense() {
 		if (!licenseToSave) {
 			license = new License();
+			Logger.info("A new license is generated in memory");
 		} else {
 			Logger.warn("An unsaved license is detected in memory. Please save the license first.");
 		}
@@ -50,11 +50,12 @@ public class LicenseGeneration {
 		try (LicenseWriter writer = new LicenseWriter(licenseName)) {
 			writer.write(license, format);
 			licenseToSave = false;
+			Logger.info("License saved to working directory.");
 		}
 	}
 
 	// dump license to screen
-	public String dumpLicense() throws IOException {
+	public String displayLicense() throws IOException {
 		if (license == null) {
 			Logger.error("No license in memory. Please create or load a license");
 			return "";
@@ -76,7 +77,7 @@ public class LicenseGeneration {
 		try (LicenseReader reader = new LicenseReader(licenseFile.getName())) {
 			license = reader.read(format);
 			licenseToSave = false;
-
+			Logger.info(licenseFile.getName()+" is loaded in memory.");
 		}
 	}
 
@@ -89,18 +90,20 @@ public class LicenseGeneration {
 
 		license.add(Feature.Create.from(feature));
 		licenseToSave = true;
+		Logger.info("Feature: "+feature+" has been added to your license. Please sign the license again before saving.");
 	}
 
 	// will generate a private-key public-key pair and load it in memory
 	private void generateKeys(String algorithm, int size) throws NoSuchAlgorithmException {
 			keyPair = LicenseKeyPair.Create.from(algorithm, size);
+			Logger.info("Private and Public Keys loaded in memory");
 	}
 
 	// will save the loaded keys to file
 	// uses the generateKeys() method internally
 
 	public void generate(String algorithm, String sizeString, IOFormat format, String privateKeyFile, String publicKeyFile) throws IOException, NoSuchAlgorithmException {
-		if (publicKeyFile.isEmpty() || privateKeyFile.isEmpty()) {
+		if (publicKeyFile.isEmpty() || privateKeyFile.isEmpty() || publicKeyFile.isBlank() || privateKeyFile.isBlank()) {
 			Logger.error("KeyPair needs the names of the keys.");
 			return;
 		}
@@ -216,6 +219,7 @@ public class LicenseGeneration {
 			Logger.error("No license detected in memory. Load or create a license.");
 		} else {
 			license.sign(keyPair.getPair().getPrivate(), "SHA-512");
+			Logger.info("License Signed. Please save before closing the app");
 		}
 	}
 
@@ -240,22 +244,4 @@ public class LicenseGeneration {
 	public Boolean allowExit() {
 		return !licenseToSave;
 	}
-
-	public static void main(String[] args) throws NoSuchAlgorithmException, IOException, InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException {
-		LicenseGeneration lg = new LicenseGeneration();
-		lg.newLicense();
-		lg.addFeature("licenseId:UUID=" + new HardwareBinder().getMachineId());
-		lg.addFeature("licensedTo:STRING=Eggy");
-		lg.addFeature("companyName:STRING=Wunkus");
-		lg.addFeature("expiryDate:DATE=2028-04-17");
-		Logger.info(lg.dumpLicense());
-		lg.generate("RSA", "2048", IOFormat.BINARY, "eggpr.key", "eggpl.key");
-		lg.signLicense();
-		Logger.info(lg.digestPublicKey());
-		lg.verifyLicense();
-		lg.saveLicense("TestLicense.bin", IOFormat.BINARY);
-		Logger.info(lg.allowExit());
-
-	}
-
 }
