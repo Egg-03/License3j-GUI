@@ -79,7 +79,8 @@ public class App {
 		             "Exit Confirmation", JOptionPane.YES_NO_OPTION, 
 		             JOptionPane.QUESTION_MESSAGE, null, null, null);
 		        if (confirm == 0) {
-		        	logTailer.close();
+		        	if(logTailer!=null)
+		        		logTailer.close();
 		           System.exit(0);
 		        }
 		    }
