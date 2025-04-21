@@ -37,6 +37,7 @@ import org.tinylog.Logger;
 
 import app.utilities.LogListener;
 import javax0.license3j.HardwareBinder;
+import javax0.license3j.io.IOFormat;
 import net.miginfocom.swing.MigLayout;
 
 public class App {
@@ -149,9 +150,9 @@ public class App {
 		JButton loadLicenseBtn = new JButton("Load License");
 		licenseFunctionPanel.add(loadLicenseBtn, "cell 0 1,aligny center");
 		
-		JComboBox<String> loadedLicenseTypeComboBox = new JComboBox<>();
+		JComboBox<IOFormat> loadedLicenseTypeComboBox = new JComboBox<>();
 		loadedLicenseTypeComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
-		loadedLicenseTypeComboBox.setModel(new DefaultComboBoxModel<>(new String[] {"BINARY", "BASE64", "TEXT"}));
+		loadedLicenseTypeComboBox.setModel(new DefaultComboBoxModel<>(new IOFormat[] {IOFormat.BINARY, IOFormat.BASE64, IOFormat.STRING}));
 		licenseFunctionPanel.add(loadedLicenseTypeComboBox, "cell 1 1,growx,aligny center");
 		
 		JTextField loadedLicenseTf = new JTextField();
@@ -171,9 +172,9 @@ public class App {
 		JButton saveLicenseBtn = new JButton("Save License");
 		licenseFunctionPanel.add(saveLicenseBtn, "cell 0 7 2 1,growx");
 		
-		JComboBox<String> saveLicenseTypeComboBox = new JComboBox<>();
+		JComboBox<IOFormat> saveLicenseTypeComboBox = new JComboBox<>();
 		saveLicenseTypeComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
-		saveLicenseTypeComboBox.setModel(new DefaultComboBoxModel<>(new String[] {"BINARY", "BASE64", "TEXT"}));
+		saveLicenseTypeComboBox.setModel(new DefaultComboBoxModel<>(new IOFormat[] {IOFormat.BINARY, IOFormat.BASE64, IOFormat.STRING}));
 		licenseFunctionPanel.add(saveLicenseTypeComboBox, "cell 2 7,growx,aligny center");
 		
 		JPanel featurePanel = new JPanel();
@@ -252,8 +253,8 @@ public class App {
 		algoSizeComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
 		keygenPanel.add(algoSizeComboBox, "cell 1 1,growx");
 		
-		JComboBox<String> keyFormatComboBox = new JComboBox<>();
-		keyFormatComboBox.setModel(new DefaultComboBoxModel<>(new String[] {"BINARY", "BASE64"}));
+		JComboBox<IOFormat> keyFormatComboBox = new JComboBox<>();
+		keyFormatComboBox.setModel(new DefaultComboBoxModel<>(new IOFormat[] {IOFormat.BINARY, IOFormat.BASE64}));
 		keyFormatComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
 		keygenPanel.add(keyFormatComboBox, "cell 2 1,growx");
 		
@@ -277,9 +278,9 @@ public class App {
 		JButton loadPrivateKeyBtn = new JButton("Load Private Key");
 		keygenPanel.add(loadPrivateKeyBtn, "cell 0 6,growx,aligny center");
 		
-		JComboBox<String> loadedPrivateKeyTypeComboBox = new JComboBox<>();
+		JComboBox<IOFormat> loadedPrivateKeyTypeComboBox = new JComboBox<>();
 		loadedPrivateKeyTypeComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
-		loadedPrivateKeyTypeComboBox.setModel(new DefaultComboBoxModel<>(new String[] {"BINARY", "BASE64"}));
+		loadedPrivateKeyTypeComboBox.setModel(new DefaultComboBoxModel<>(new IOFormat[] {IOFormat.BINARY, IOFormat.BASE64}));
 		keygenPanel.add(loadedPrivateKeyTypeComboBox, "cell 1 6,growx,aligny center");
 		
 		JTextField loadedPrivateKeyNameTf = new JTextField();
@@ -291,9 +292,9 @@ public class App {
 		JButton loadPublicKeyBtn = new JButton("Load Public Key");
 		keygenPanel.add(loadPublicKeyBtn, "cell 0 7,growx,aligny center");
 		
-		JComboBox<String> loadedPublicKeyTypeComboBox = new JComboBox<>();
+		JComboBox<IOFormat> loadedPublicKeyTypeComboBox = new JComboBox<>();
 		loadedPublicKeyTypeComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
-		loadedPublicKeyTypeComboBox.setModel(new DefaultComboBoxModel<>(new String[] {"BINARY", "BASE64"}));
+		loadedPublicKeyTypeComboBox.setModel(new DefaultComboBoxModel<>(new IOFormat[] {IOFormat.BINARY, IOFormat.BASE64}));
 		keygenPanel.add(loadedPublicKeyTypeComboBox, "cell 1 7,growx,aligny center");
 		
 		JTextField loadedPublicKeyNameTf = new JTextField();
