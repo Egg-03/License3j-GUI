@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -36,8 +37,12 @@ import org.apache.commons.io.input.Tailer;
 import org.apache.commons.io.input.TailerListener;
 import org.tinylog.Logger;
 
+import com.formdev.flatlaf.FlatLaf;
+
 import app.logic.LicenseGeneration;
+import app.themes.LightTheme;
 import app.utilities.LogListener;
+import app.utilities.UIManagerConfigurations;
 import javax0.license3j.HardwareBinder;
 import javax0.license3j.io.IOFormat;
 import net.miginfocom.swing.MigLayout;
@@ -53,6 +58,11 @@ public class App {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		
+		FlatLaf.registerCustomDefaultsSource("themes"); // for maven build, this points towards src/main/resources/themes
+		UIManagerConfigurations.enableRoundComponents();
+		LightTheme.setup();
+		
 		EventQueue.invokeLater(()-> {
 			App window = new App();
 			window.mainframe.setVisible(true);
@@ -71,6 +81,8 @@ public class App {
 	 */
 	private void initialize() {
 		mainframe = new JFrame();
+		mainframe.setIconImage(Toolkit.getDefaultToolkit().getImage(App.class.getResource("/icons/logo.png")));
+		mainframe.setResizable(false);
 		mainframe.setTitle("License3J GUI");
 		mainframe.setBounds(100, 100, 945, 495);
 		mainframe.setLocationRelativeTo(null);
@@ -97,20 +109,24 @@ public class App {
 		mainframe.addWindowListener(exitListener);
 		mainframe.getContentPane().setLayout(new BorderLayout(0, 0));
 		
-		addMenu();
+		addMenuPanel();
 		addLicensePanel();
 		addLogPanel();		
 	}
 
-	private void addMenu() {
+	private void addMenuPanel() {
+		JPanel menuPanel = new JPanel();
+		mainframe.getContentPane().add(menuPanel, BorderLayout.NORTH);
+		menuPanel.setLayout(new GridLayout(0, 1, 0, 0));
+		
 		JMenuBar menuBar = new JMenuBar();
-		mainframe.setJMenuBar(menuBar);
+		menuPanel.add(menuBar);
 		
-		JMenu mnNewMenu = new JMenu("Help");
-		menuBar.add(mnNewMenu);
+		JMenu helpMenu = new JMenu("Help");
+		menuBar.add(helpMenu);
 		
-		JMenu mnNewMenu_1 = new JMenu("Logs");
-		menuBar.add(mnNewMenu_1);
+		JMenu logMenu = new JMenu("Logs");
+		menuBar.add(logMenu);
 	}
 
 	private void addLogPanel() {
@@ -130,6 +146,7 @@ public class App {
 		scrollPane.setViewportView(logtextArea);	
 		
 		TailerListener tl = new LogListener(logtextArea);
+		
 		logTailer = Tailer.builder()
 				.setFile(new File("logs/latest.log"))
 				.setCharset(Charset.defaultCharset())
@@ -137,7 +154,6 @@ public class App {
 				.setDelayDuration(Duration.ofSeconds(1))
 				.setReOpen(true)
 				.get();
-		
 	}
 
 	private void addLicensePanel() {
@@ -150,7 +166,7 @@ public class App {
 		licenseFunctionPanel.setPreferredSize(new Dimension(licensePanel.getWidth()/3, licensePanel.getHeight()));
 		licenseFunctionPanel.setBorder(new TitledBorder("License Functions"));
 		licensePanel.add(licenseFunctionPanel);
-		licenseFunctionPanel.setLayout(new MigLayout("filly", "[][grow][grow]", "[][][][][][][][]"));
+		licenseFunctionPanel.setLayout(new MigLayout("filly", "[][grow][grow]", "[][][][][][][][][][]"));
 		
 		JButton newLicenseBtn = new JButton("New License");
 		licenseFunctionPanel.add(newLicenseBtn, "cell 0 0 3 1,growx");
@@ -194,17 +210,21 @@ public class App {
 		licenseFunctionPanel.add(verifyLicenseBtn, "cell 2 5,alignx right");
 		verifyLicenseBtn.addActionListener(e->new VerifyLicense(lg).execute());
 		
+		JLabel licenseNameLabel = new JLabel("License Name");
+		licenseNameLabel.setFont(new Font("Segoe UI", Font.ITALIC, 10));
+		licenseFunctionPanel.add(licenseNameLabel, "cell 2 8,alignx center");
+		
 		JButton saveLicenseBtn = new JButton("Save License");
-		licenseFunctionPanel.add(saveLicenseBtn, "cell 0 7,growx,aligny center");
+		licenseFunctionPanel.add(saveLicenseBtn, "cell 0 9,growx,aligny center");
 		
 		JComboBox<IOFormat> saveLicenseTypeComboBox = new JComboBox<>();
 		saveLicenseTypeComboBox.setFont(new Font("Monospaced", Font.PLAIN, 11));
 		saveLicenseTypeComboBox.setModel(new DefaultComboBoxModel<>(new IOFormat[] {IOFormat.BINARY, IOFormat.BASE64, IOFormat.STRING}));
-		licenseFunctionPanel.add(saveLicenseTypeComboBox, "cell 1 7,growx,aligny center");
+		licenseFunctionPanel.add(saveLicenseTypeComboBox, "cell 1 9,growx,aligny center");
 		
 		JTextField licenseNameToSaveTf = new JTextField();
 		licenseNameToSaveTf.setFont(new Font("Monospaced", Font.PLAIN, 11));
-		licenseFunctionPanel.add(licenseNameToSaveTf, "cell 2 7,growx,aligny center");
+		licenseFunctionPanel.add(licenseNameToSaveTf, "cell 2 9,growx,aligny center");
 		licenseNameToSaveTf.setColumns(10);
 		
 		saveLicenseBtn.addActionListener(e->new SaveLicense(lg, licenseNameToSaveTf.getText(), (IOFormat) saveLicenseTypeComboBox.getSelectedItem()).execute());
@@ -219,7 +239,7 @@ public class App {
 		featurePanel.add(featureNameLabel, "cell 0 0");
 		
 		JTextField featureNameTf = new JTextField();
-		featurePanel.add(featureNameTf, "cell 1 0,grow");
+		featurePanel.add(featureNameTf, "cell 1 0,growx,aligny center");
 		featureNameTf.setColumns(10);
 		
 		JLabel featureTypeLabel = new JLabel("F.Type");
@@ -234,7 +254,7 @@ public class App {
 		featurePanel.add(featureContentLabel, "cell 0 2");
 		
 		JTextField featureContentTf = new JTextField();
-		featurePanel.add(featureContentTf, "cell 1 2,grow");
+		featurePanel.add(featureContentTf, "cell 1 2,growx,aligny center");
 		featureContentTf.setColumns(10);
 		
 		JButton addFeatureBtn = new JButton("Add Feature");
