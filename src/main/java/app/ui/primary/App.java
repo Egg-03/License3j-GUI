@@ -148,7 +148,7 @@ public class App {
 		TailerListener tl = new LogListener(logtextArea);
 		
 		logTailer = Tailer.builder()
-				.setFile(new File("logs/latest.log"))
+				.setFile(new File("logs/currentsession.log"))
 				.setCharset(Charset.defaultCharset())
 				.setTailerListener(tl)
 				.setDelayDuration(Duration.ofSeconds(1))
