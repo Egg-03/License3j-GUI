@@ -47,6 +47,7 @@ public class App {
 	private JFrame mainframe;
 	private Tailer logTailer;
 	private final LicenseGeneration lg = new LicenseGeneration();
+	private static final String APP_LOCATION="user.dir";
 
 	/**
 	 * Launch the application.
@@ -171,6 +172,7 @@ public class App {
 		
 		loadLicenseBtn.addActionListener(e->{
 			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setCurrentDirectory(new File(System.getProperty(APP_LOCATION)));
 			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			fileChooser.setMultiSelectionEnabled(false);
 			int option = fileChooser.showOpenDialog(mainframe);
@@ -342,6 +344,7 @@ public class App {
 		
 		loadPrivateKeyBtn.addActionListener(e->{
 			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setCurrentDirectory(new File(System.getProperty(APP_LOCATION)));
 			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			fileChooser.setMultiSelectionEnabled(false);
 			int option = fileChooser.showOpenDialog(mainframe);
@@ -353,6 +356,7 @@ public class App {
 		
 		loadPublicKeyBtn.addActionListener(e->{
 			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setCurrentDirectory(new File(System.getProperty(APP_LOCATION)));
 			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			fileChooser.setMultiSelectionEnabled(false);
 			int option = fileChooser.showOpenDialog(mainframe);

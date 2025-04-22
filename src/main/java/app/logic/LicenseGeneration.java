@@ -46,11 +46,15 @@ public class LicenseGeneration {
 			Logger.error("No license in memory. Please create or load a license");
 			return;
 		}
-
-		try (LicenseWriter writer = new LicenseWriter(licenseName)) {
+		
+		File licenseFolder = new File("Licenses");
+		if(!licenseFolder.isDirectory()) {
+			Logger.info("'Licenses' directory created in the working directory with status "+licenseFolder.mkdir());
+		}
+		try (LicenseWriter writer = new LicenseWriter(licenseFolder+File.separator+licenseName)) {
 			writer.write(license, format);
 			licenseToSave = false;
-			Logger.info("License saved to working directory.");
+			Logger.info("License saved to "+licenseFolder.getCanonicalPath());
 		}
 	}
 
@@ -74,7 +78,7 @@ public class LicenseGeneration {
 			return;
 		}
 
-		try (LicenseReader reader = new LicenseReader(licenseFile.getName())) {
+		try (LicenseReader reader = new LicenseReader(licenseFile)) {
 			license = reader.read(format);
 			licenseToSave = false;
 			Logger.info(licenseFile.getName()+" is loaded in memory.");
@@ -117,12 +121,14 @@ public class LicenseGeneration {
 		}
 
 		generateKeys(algorithm, size);
-		try (KeyPairWriter writer = new KeyPairWriter(new File(privateKeyFile), new File(publicKeyFile))) {
+		
+		File keyFolder = new File("Keys");
+		if(!keyFolder.isDirectory()) {
+			Logger.info("'Key' folder created with success state "+keyFolder.mkdir());
+		}
+		try (KeyPairWriter writer = new KeyPairWriter(new File(keyFolder+File.separator+privateKeyFile), new File(keyFolder+File.separator+publicKeyFile))) {
 			writer.write(keyPair, format);
-			final String privateKeyPath = new File(privateKeyFile).getAbsolutePath();
-			final String publicKeyPath = new File(publicKeyFile).getAbsolutePath();
-			Logger.info("Private key saved to " + privateKeyPath);
-			Logger.info("Public key saved to " + publicKeyPath);
+			Logger.info("Keys saved to: "+keyFolder.getCanonicalPath());
 		}
 	}
 
