@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.egg-03</groupId>
   <artifactId>license3j-gui</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
   <name>License3j-GUI</name>
   <description>A GUI for License3j REPL application</description>
   <properties>
@@ -45,6 +45,11 @@
     	<groupId>com.formdev</groupId>
     	<artifactId>flatlaf-extras</artifactId>
     	<version>3.5.4</version>
+	</dependency>
+	<dependency>
+    	<groupId>com.vladsch.flexmark</groupId>
+    	<artifactId>flexmark-all</artifactId>
+    	<version>0.64.8</version>
 	</dependency>
   </dependencies>
 </project>

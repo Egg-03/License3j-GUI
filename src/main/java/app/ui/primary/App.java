@@ -1,6 +1,7 @@
 package app.ui.primary;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -9,6 +10,7 @@ import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
@@ -41,6 +43,7 @@ import com.formdev.flatlaf.FlatLaf;
 
 import app.logic.LicenseGeneration;
 import app.themes.LightTheme;
+import app.ui.secondary.AboutUI;
 import app.utilities.LogListener;
 import app.utilities.UIManagerConfigurations;
 import javax0.license3j.HardwareBinder;
@@ -123,18 +126,33 @@ public class App {
 		JMenuBar menuBar = new JMenuBar();
 		menuPanel.add(menuBar);
 		
-		JMenu helpMenu = new JMenu("Help");
-		menuBar.add(helpMenu);
+		JMenu appMenu = new JMenu("App");
+		menuBar.add(appMenu);
 		
 		JMenuItem forceQuit = new JMenuItem("Force Quit");
 		forceQuit.addActionListener(e->{
 			Logger.warn("Application was force quit on it's last run.");
 			System.exit(-1);
 		});
-		helpMenu.add(forceQuit);
+		appMenu.add(forceQuit);
 		
-		JMenu logMenu = new JMenu("Logs");
-		menuBar.add(logMenu);
+		JMenu helpMenu = new JMenu("Help");
+		menuBar.add(helpMenu);
+		
+		JMenuItem about = new JMenuItem("About");
+		about.addActionListener(e->EventQueue.invokeLater(()->new AboutUI().setVisible(true)));
+		helpMenu.add(about);
+				
+		JMenuItem openLogFolder = new JMenuItem("Open Log Folder");
+		openLogFolder.addActionListener(e->{
+			try {
+				Desktop.getDesktop().open(new File("logs"));
+			} catch (IOException e1) {
+				Logger.error("Failed to open the logs folder"+e);
+			}
+		});
+		helpMenu.add(openLogFolder);
+		
 	}
 
 	private void addLogPanel() {
