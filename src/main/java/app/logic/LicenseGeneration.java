@@ -226,6 +226,7 @@ public class LicenseGeneration {
 		} else {
 			license.sign(keyPair.getPair().getPrivate(), "SHA-512");
 			Logger.info("License Signed. Please save before closing the app");
+			licenseToSave = true;
 		}
 	}
 
