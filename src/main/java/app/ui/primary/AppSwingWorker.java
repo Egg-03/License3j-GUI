@@ -3,7 +3,6 @@ package app.ui.primary;
 import java.io.File;
 import java.util.concurrent.ExecutionException;
 
-import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
 import org.tinylog.Logger;
@@ -50,13 +49,11 @@ class LoadLicense extends SwingWorker<Void, Void> {
 	
 	private LicenseGeneration lg;
 	private IOFormat licenseType;
-	private JTextField licenseLoadStatus;
 	private File licenseFile;
 	
-	protected LoadLicense(LicenseGeneration lg, IOFormat licenseType, JTextField licenseLoadStatus, File licenseFile) {
+	protected LoadLicense(LicenseGeneration lg, IOFormat licenseType, File licenseFile) {
 		this.lg=lg;
 		this.licenseType=licenseType;
-		this.licenseLoadStatus=licenseLoadStatus;
 		this.licenseFile=licenseFile;
 	}
 
@@ -70,13 +67,10 @@ class LoadLicense extends SwingWorker<Void, Void> {
 	protected void done() {
 		
 		try {
-			get();
-			licenseLoadStatus.setText("Loaded");
-		} catch (ExecutionException e) {
-			licenseLoadStatus.setText("Error");
+			get();	
+		} catch (ExecutionException e) {	
 			Logger.error(e);
 		} catch (InterruptedException e) {
-			licenseLoadStatus.setText("Error");
 			Logger.error(e);
 			Thread.currentThread().interrupt();
 		}
@@ -280,13 +274,11 @@ class LoadPrivateKey extends SwingWorker<Void, Void> {
 	
 	private LicenseGeneration lg;
 	private IOFormat keyFormat;
-	private JTextField keyLoadStatus;
 	private File keyFile;
 	
-	protected LoadPrivateKey(LicenseGeneration lg, IOFormat keyFormat, JTextField keyLoadStatus, File keyFile) {
+	protected LoadPrivateKey(LicenseGeneration lg, IOFormat keyFormat, File keyFile) {
 		this.lg=lg;
 		this.keyFormat=keyFormat;
-		this.keyLoadStatus=keyLoadStatus;
 		this.keyFile=keyFile;
 	}
 
@@ -300,13 +292,10 @@ class LoadPrivateKey extends SwingWorker<Void, Void> {
 	protected void done() {
 		
 		try {
-			get();
-			keyLoadStatus.setText("Loaded");
-		} catch (ExecutionException e) {
-			keyLoadStatus.setText("Error");
+			get();		
+		} catch (ExecutionException e) {		
 			Logger.error(e);
 		} catch (InterruptedException e) {
-			keyLoadStatus.setText("Error");
 			Logger.error(e);
 			Thread.currentThread().interrupt();
 		}
@@ -317,13 +306,11 @@ class LoadPublicKey extends SwingWorker<Void, Void> {
 	
 	private LicenseGeneration lg;
 	private IOFormat keyFormat;
-	private JTextField keyLoadStatus;
 	private File keyFile;
 	
-	protected LoadPublicKey(LicenseGeneration lg, IOFormat keyFormat, JTextField keyLoadStatus, File keyFile) {
+	protected LoadPublicKey(LicenseGeneration lg, IOFormat keyFormat,  File keyFile) {
 		this.lg=lg;
-		this.keyFormat=keyFormat;
-		this.keyLoadStatus=keyLoadStatus;
+		this.keyFormat=keyFormat;	
 		this.keyFile=keyFile;
 	}
 
@@ -337,13 +324,10 @@ class LoadPublicKey extends SwingWorker<Void, Void> {
 	protected void done() {
 		
 		try {
-			get();
-			keyLoadStatus.setText("Loaded");
+			get();		
 		} catch (ExecutionException e) {
-			keyLoadStatus.setText("Error");
 			Logger.error(e);
-		} catch (InterruptedException e) {
-			keyLoadStatus.setText("Error");
+		} catch (InterruptedException e) {		
 			Logger.error(e);
 			Thread.currentThread().interrupt();
 		}

@@ -14,7 +14,7 @@ public class VersionAndOtherInfo {
 	
 	public static final String ABOUT = """
 			## About License3J GUI
-			License3J GUI is a Graphical User Interface developed by Egg-03 for the free and open source [License3j](https://github.com/verhas/License3j) library. The source code is based on the [License3j-REPL Application](https://github.com/verhas/License3jRepl). This application provides a user-friendly interface to create, view, and validate license files, generate keys for signing the licenses, using the powerful features of the License3j library. See the source code on [GitHub](https://github.com/Egg-03/License3j-GUI)
+			License3J GUI is a Graphical User Interface developed by [Egg-03](https://www.github.com/Egg-03) for the free and open source [License3j](https://github.com/verhas/License3j) library. The source code is based on the [License3j-REPL Application](https://github.com/verhas/License3jRepl). This application provides a user-friendly interface to create, view, and validate license files, generate keys for signing the licenses, using the powerful features of the License3j library. See the source code on [GitHub](https://github.com/Egg-03/License3j-GUI)
 
 			## About License3J
 			License3j is a free and open-source Java library to manage license files in Java programs.
