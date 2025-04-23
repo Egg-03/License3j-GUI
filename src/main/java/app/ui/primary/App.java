@@ -46,6 +46,7 @@ import app.utilities.UIManagerConfigurations;
 import javax0.license3j.HardwareBinder;
 import javax0.license3j.io.IOFormat;
 import net.miginfocom.swing.MigLayout;
+import javax.swing.JMenuItem;
 
 public class App {
 
@@ -124,6 +125,13 @@ public class App {
 		
 		JMenu helpMenu = new JMenu("Help");
 		menuBar.add(helpMenu);
+		
+		JMenuItem forceQuit = new JMenuItem("Force Quit");
+		forceQuit.addActionListener(e->{
+			Logger.warn("Application was force quit on it's last run.");
+			System.exit(-1);
+		});
+		helpMenu.add(forceQuit);
 		
 		JMenu logMenu = new JMenu("Logs");
 		menuBar.add(logMenu);
