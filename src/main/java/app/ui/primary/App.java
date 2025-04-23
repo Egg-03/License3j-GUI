@@ -166,7 +166,6 @@ public class App {
 		logPanel.add(scrollPane);
 		
 		JTextArea logtextArea = new JTextArea();
-		logtextArea.setLineWrap(true);
 		logtextArea.setEditable(false);
 		logtextArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		scrollPane.setViewportView(logtextArea);	

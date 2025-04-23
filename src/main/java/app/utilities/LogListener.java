@@ -21,7 +21,7 @@ public class LogListener extends TailerListenerAdapter {
 	
 	@Override
 	public void handle(String line) {
-		SwingUtilities.invokeLater(()-> ta.append(line+"\n"));
+		SwingUtilities.invokeLater(()-> ta.append(line+System.lineSeparator()));
 	}
 	
 	@Override
