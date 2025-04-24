@@ -18,9 +18,14 @@ import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -28,14 +33,20 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 import org.apache.commons.io.input.Tailer;
 import org.apache.commons.io.input.TailerListener;
@@ -51,7 +62,7 @@ import app.utilities.UIManagerConfigurations;
 import javax0.license3j.HardwareBinder;
 import javax0.license3j.io.IOFormat;
 import net.miginfocom.swing.MigLayout;
-import javax.swing.JMenuItem;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class App {
 
@@ -59,6 +70,7 @@ public class App {
 	private Tailer logTailer;
 	private final LicenseGeneration lg = new LicenseGeneration();
 	private static final String APP_LOCATION="user.dir";
+	private ScheduledExecutorService scheduler;
 
 	/**
 	 * Launch the application.
@@ -101,14 +113,18 @@ public class App {
 		             null, "Are you sure you want to close the application?", 
 		             "Exit Confirmation", JOptionPane.YES_NO_OPTION, 
 		             JOptionPane.QUESTION_MESSAGE, null, null, null);
-		        if (confirm == 0) {
-		        	if(logTailer!=null)
-		        		logTailer.close();
-		        	
+		        if (confirm == 0) {  	
 		        	if(Boolean.FALSE.equals(lg.allowExit())) 
 		        		JOptionPane.showMessageDialog(mainframe, "WARNING: Unsaved License Detected. Please save before closing");
-		        	else
+		        	else {
+		        		if(logTailer!=null)
+			        		logTailer.close();
+			        	
+			        	if(scheduler!=null)
+		        			scheduler.close();
+			        	
 		        		System.exit(0);
+		        	}	  		
 		        }
 		    }
 		};
@@ -117,7 +133,7 @@ public class App {
 		
 		addMenuPanel();
 		addLicensePanel();
-		addLogPanel();		
+		addLogAndStatusPanel();		
 	}
 
 	private void addMenuPanel() {
@@ -157,15 +173,13 @@ public class App {
 		
 	}
 
-	private void addLogPanel() {
-		JPanel logPanel = new JPanel();
-		mainframe.getContentPane().add(logPanel, BorderLayout.SOUTH);
-		logPanel.setPreferredSize(new Dimension(mainframe.getWidth(), mainframe.getHeight()/3));
-		logPanel.setLayout(new GridLayout(0, 1, 0, 0));
-		logPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Logs", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+	private void addLogAndStatusPanel() {
+		JPanel logAndStatusPanel = new JPanel();
+		mainframe.getContentPane().add(logAndStatusPanel, BorderLayout.SOUTH);
+		logAndStatusPanel.setPreferredSize(new Dimension(mainframe.getWidth(), mainframe.getHeight()/3));
+		logAndStatusPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Logs and Status", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		
 		JScrollPane scrollPane = new JScrollPane();
-		logPanel.add(scrollPane);
 		
 		JTextArea logtextArea = new JTextArea();
 		logtextArea.setEditable(false);
@@ -173,7 +187,6 @@ public class App {
 		scrollPane.setViewportView(logtextArea);	
 		
 		TailerListener tl = new LogListener(logtextArea);
-		
 		logTailer = Tailer.builder()
 				.setFile(new File("logs/currentsession.log"))
 				.setCharset(Charset.defaultCharset())
@@ -181,6 +194,61 @@ public class App {
 				.setDelayDuration(Duration.ofSeconds(1))
 				.setReOpen(true)
 				.get();
+		
+		JPanel statusPanel = new JPanel();
+		statusPanel.setLayout(new GridLayout(0, 1, 0, 0));
+		
+		JScrollPane tableScrollPane = new JScrollPane();
+		statusPanel.add(tableScrollPane);
+		
+		JTable table = new JTable();
+		table.setFillsViewportHeight(true);
+		table.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
+		table.setShowHorizontalLines(true);
+		table.setShowVerticalLines(true);
+		table.setModel(new DefaultTableModel(4,2));
+		
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		String[] tableHeading = { "Constraint", "Status" };
+		for(int i=0 ; i<table.getModel().getColumnCount(); i++) {
+			table.getColumnModel().getColumn(i).setHeaderValue(tableHeading[i]);
+			table.getColumnModel().getColumn(i).setCellRenderer(dtcr);
+		}
+		
+		String[] constraints = { "License In Memory", "License Save Status", "Public Key Loaded", "Private Key Loaded" };
+		for(int i=0 ; i<table.getModel().getRowCount(); i++) {
+			table.getModel().setValueAt(constraints[i], i, 0);
+		}
+		
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tableScrollPane.setViewportView(table);
+		
+		
+		GroupLayout gl_logAndStatusPanel = new GroupLayout(logAndStatusPanel);
+		gl_logAndStatusPanel.setHorizontalGroup(
+			gl_logAndStatusPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_logAndStatusPanel.createSequentialGroup()
+					.addGap(7)
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(statusPanel, GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
+					.addContainerGap())
+		);
+		gl_logAndStatusPanel.setVerticalGroup(
+			gl_logAndStatusPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_logAndStatusPanel.createSequentialGroup()
+					.addGap(7)
+					.addGroup(gl_logAndStatusPanel.createParallelGroup(Alignment.TRAILING, false)
+						.addComponent(statusPanel, Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+						.addComponent(scrollPane, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE))
+					.addContainerGap())
+		);
+		logAndStatusPanel.setLayout(gl_logAndStatusPanel);
+		
+		scheduler = Executors.newScheduledThreadPool(1);
+		scheduler.scheduleWithFixedDelay(()->new LiveStatus(lg, table).execute(), 1, 1, TimeUnit.SECONDS);
 	}
 
 	private void addLicensePanel() {

@@ -1,8 +1,10 @@
 package app.ui.primary;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import javax.swing.JTable;
 import javax.swing.SwingWorker;
 
 import org.tinylog.Logger;
@@ -353,6 +355,37 @@ class DigestPublicKey extends SwingWorker<String, Void> {
 		
 		try {
 			Logger.info(get());
+		} catch (ExecutionException e) {
+			Logger.error(e);
+		} catch (InterruptedException e) {
+			Logger.error(e);
+			Thread.currentThread().interrupt();
+		}
+	}
+}
+
+class LiveStatus extends SwingWorker<List<Boolean>, Void> {
+	private LicenseGeneration lg;
+	private JTable t;
+	
+	protected LiveStatus(LicenseGeneration lg, JTable table) {
+		this.lg=lg;
+		this.t=table;
+	}
+
+	@Override
+	protected List<Boolean> doInBackground() throws Exception {
+		return List.of(lg.isLicenseLoaded(), lg.licensePendingSaveStatus(), lg.isPrivateKeyLoaded(), lg.isPublicKeyLoaded());
+	}
+	
+	@Override
+	protected void done() {
+		try {
+			List<Boolean> statusList = get();
+			for(int i=0; i<t.getRowCount(); i++) {
+				t.getModel().setValueAt(statusList.get(i), i, 1);
+			}
+			
 		} catch (ExecutionException e) {
 			Logger.error(e);
 		} catch (InterruptedException e) {

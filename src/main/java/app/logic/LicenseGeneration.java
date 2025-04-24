@@ -148,7 +148,7 @@ public class LicenseGeneration {
 
 	// load private key
 	public void loadPrivateKey(File keyFile, IOFormat format) throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
-		if (keyPair != null && keyPair.getPair() != null && keyPair.getPair().getPrivate() != null) {
+		if (Boolean.TRUE.equals(isPrivateKeyLoaded())) {
 			Logger.info("Private Key in memory will be overriden by a new key loaded from a file.");
 		}
 
@@ -164,9 +164,8 @@ public class LicenseGeneration {
 	}
 
 	// load public key
-
 	public void loadPublicKey(File keyFile, IOFormat format) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
-		if (keyPair != null && keyPair.getPair() != null && keyPair.getPair().getPrivate() != null) {
+		if (Boolean.TRUE.equals(isPublicKeyLoaded())) {
 			Logger.info("Public Key in memory will be overriden by a new key loaded from a file.");
 		}
 
@@ -235,7 +234,7 @@ public class LicenseGeneration {
 			Logger.error("No license loaded in memory to be verified.");
 			return;
 		}
-		if (keyPair == null || keyPair.getPair() == null || keyPair.getPair().getPublic() == null) {
+		if (Boolean.FALSE.equals(isPublicKeyLoaded())) {
 			Logger.error("No public key loaded in memory to be verified with.");
 			return;
 		}
@@ -250,5 +249,22 @@ public class LicenseGeneration {
 	// be saved
 	public Boolean allowExit() {
 		return !licenseToSave;
+	}
+	
+	// extra functions
+	public Boolean isLicenseLoaded() {
+		return license != null;
+	}
+	
+	public Boolean licensePendingSaveStatus() {
+		return licenseToSave;
+	}
+	
+	public Boolean isPrivateKeyLoaded() {
+		return (keyPair != null && keyPair.getPair() != null && keyPair.getPair().getPrivate() != null);
+	}
+	
+	public Boolean isPublicKeyLoaded() {
+		return (keyPair != null && keyPair.getPair() != null && keyPair.getPair().getPublic() != null);
 	}
 }
