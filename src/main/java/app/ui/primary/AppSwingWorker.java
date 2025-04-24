@@ -1,10 +1,8 @@
 package app.ui.primary;
 
 import java.io.File;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import javax.swing.JTable;
 import javax.swing.SwingWorker;
 
 import org.tinylog.Logger;
