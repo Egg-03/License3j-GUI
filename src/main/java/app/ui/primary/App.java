@@ -18,6 +18,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +43,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
@@ -248,7 +250,7 @@ public class App {
 		logAndStatusPanel.setLayout(gl_logAndStatusPanel);
 		
 		scheduler = Executors.newScheduledThreadPool(1);
-		scheduler.scheduleWithFixedDelay(()->new LiveStatus(lg, table).execute(), 1, 1, TimeUnit.SECONDS);
+		scheduler.scheduleWithFixedDelay(()->liveStatusReceiver(lg, table), 1, 1, TimeUnit.SECONDS);
 	}
 
 	private void addLicensePanel() {
@@ -476,5 +478,15 @@ public class App {
 				new LoadPublicKey(lg, (IOFormat)loadedKeyTypeComboBox.getSelectedItem(), fileChooser.getSelectedFile()).execute();
 			} 
 		});	
+	}
+	
+	private void liveStatusReceiver(LicenseGeneration lg, JTable table) {
+		
+		List<Boolean> statusReportList = List.of(lg.isLicenseLoaded(), lg.licensePendingSaveStatus(), lg.isPrivateKeyLoaded(), lg.isPublicKeyLoaded());
+		SwingUtilities.invokeLater(()->{
+			for(int i=0; i<table.getRowCount(); i++) {
+				table.getModel().setValueAt(statusReportList.get(i), i, 1);
+			}
+		});
 	}
 }
