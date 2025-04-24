@@ -152,6 +152,15 @@ public class App {
 		JMenuItem forceQuit = new JMenuItem("Force Quit");
 		forceQuit.addActionListener(e->{
 			Logger.warn("Application was force quit on it's last run.");
+			
+			if(logTailer!=null) {
+				logTailer.close();
+			}		
+        	
+        	if(scheduler!=null) {
+        		scheduler.close();
+        	}
+
 			System.exit(-1);
 		});
 		appMenu.add(forceQuit);
