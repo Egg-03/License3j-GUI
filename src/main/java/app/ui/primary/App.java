@@ -44,6 +44,8 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
@@ -57,14 +59,18 @@ import org.tinylog.Logger;
 import com.formdev.flatlaf.FlatLaf;
 
 import app.logic.LicenseGeneration;
+import app.themes.DarkTheme;
 import app.themes.LightTheme;
 import app.ui.secondary.AboutUI;
 import app.utilities.LogListener;
+import app.utilities.ThemeManager;
 import app.utilities.UIManagerConfigurations;
 import javax0.license3j.HardwareBinder;
 import javax0.license3j.io.IOFormat;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.ButtonGroup;
 
 public class App {
 
@@ -73,6 +79,7 @@ public class App {
 	private final LicenseGeneration lg = new LicenseGeneration();
 	private static final String APP_LOCATION="user.dir";
 	private ScheduledExecutorService scheduler;
+	private final ButtonGroup buttonGroup = new ButtonGroup();
 
 	/**
 	 * Launch the application.
@@ -81,7 +88,11 @@ public class App {
 		
 		FlatLaf.registerCustomDefaultsSource("themes"); // for maven build, this points towards src/main/resources/themes
 		UIManagerConfigurations.enableRoundComponents();
-		LightTheme.setup();
+		try {
+			UIManager.setLookAndFeel(ThemeManager.getRegisteredTheme());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException| UnsupportedLookAndFeelException e) {
+			Logger.error(e);
+		}
 		
 		EventQueue.invokeLater(()-> {
 			App window = new App();
@@ -181,6 +192,34 @@ public class App {
 			}
 		});
 		helpMenu.add(openLogFolder);
+		
+		JMenu appearanceMenu = new JMenu("Appearance");
+		menuBar.add(appearanceMenu);
+		
+		JRadioButtonMenuItem lightThemeBtn = new JRadioButtonMenuItem("Light Theme");
+		buttonGroup.add(lightThemeBtn);
+		appearanceMenu.add(lightThemeBtn);
+		
+		JRadioButtonMenuItem darkThemeBtn = new JRadioButtonMenuItem("Dark Theme");
+		buttonGroup.add(darkThemeBtn);
+		appearanceMenu.add(darkThemeBtn);
+		
+		lightThemeBtn.addActionListener(e-> {
+			LightTheme.setup();
+			SwingUtilities.updateComponentTreeUI(mainframe);
+			ThemeManager.registerTheme("app.themes.LightTheme");
+		});
+		
+		darkThemeBtn.addActionListener(e-> {
+			DarkTheme.setup();
+			SwingUtilities.updateComponentTreeUI(mainframe);
+			ThemeManager.registerTheme("app.themes.DarkTheme");
+		});
+		
+		// a call to this function notifies the radio buttons of the theme that was loaded using the UIManager when the application was first started
+		// this function cannot be called when the LaF is being applied cause LaF is applied before the components are loaded
+		// and this function needs to access the loaded components or it will throw a NullPointerException
+		ThemeManager.notifyCurrentTheme(lightThemeBtn, darkThemeBtn);
 		
 	}
 
