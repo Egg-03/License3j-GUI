@@ -28,12 +28,14 @@ public class LicenseGeneration {
 
 	private License license;
 	private boolean licenseToSave = false;
+	private boolean licenseToSign = false;
 	private LicenseKeyPair keyPair;
 
 	// generate a new license if there are no previously unsaved licenses
 	public void newLicense() {
 		if (!licenseToSave) {
 			license = new License();
+			licenseToSign = true;
 			Logger.info("A new license is generated in memory");
 		} else {
 			Logger.warn("An unsaved license is detected in memory. Please save the license first.");
@@ -44,6 +46,11 @@ public class LicenseGeneration {
 	public void saveLicense(String licenseName, IOFormat format) throws IOException {
 		if (license == null) {
 			Logger.error("No license in memory. Please create or load a license");
+			return;
+		} 
+		
+		if(licenseToSign) {
+			Logger.error("License needs to be signed before saving");
 			return;
 		}
 		
@@ -81,6 +88,7 @@ public class LicenseGeneration {
 		try (LicenseReader reader = new LicenseReader(licenseFile)) {
 			license = reader.read(format);
 			licenseToSave = false;
+			licenseToSign = false;
 			Logger.info(licenseFile.getName()+" is loaded in memory.");
 		}
 	}
@@ -94,6 +102,7 @@ public class LicenseGeneration {
 
 		license.add(Feature.Create.from(feature));
 		licenseToSave = true;
+		licenseToSign = true;
 		Logger.info("Feature: "+feature+" has been added to your license. Please sign the license again before saving.");
 	}
 
@@ -226,6 +235,7 @@ public class LicenseGeneration {
 			license.sign(keyPair.getPair().getPrivate(), "SHA-512");
 			Logger.info("License Signed. Please save before closing the app");
 			licenseToSave = true;
+            licenseToSign = false;
 		}
 	}
 
@@ -245,19 +255,17 @@ public class LicenseGeneration {
 		}
 	}
 
-	// should not allow the app to exit if there is a license in memory waiting to
-	// be saved
-	public Boolean allowExit() {
-		return !licenseToSave;
-	}
-	
 	// extra functions
 	public Boolean isLicenseLoaded() {
 		return license != null;
 	}
 	
-	public Boolean licensePendingSaveStatus() {
+	public Boolean licenseRequiresSaving() {
 		return licenseToSave;
+	}
+	
+	public Boolean licenseRequiresSigning() {
+		return licenseToSign;
 	}
 	
 	public Boolean isPrivateKeyLoaded() {

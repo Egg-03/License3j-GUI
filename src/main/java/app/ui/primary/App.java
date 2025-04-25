@@ -127,7 +127,7 @@ public class App {
 		             "Exit Confirmation", JOptionPane.YES_NO_OPTION, 
 		             JOptionPane.QUESTION_MESSAGE, null, null, null);
 		        if (confirm == 0) {  	
-		        	if(Boolean.FALSE.equals(lg.allowExit())) 
+		        	if(Boolean.TRUE.equals(lg.licenseRequiresSaving())) 
 		        		JOptionPane.showMessageDialog(mainframe, "WARNING: Unsaved License Detected. Please save before closing");
 		        	else {
 		        		if(logTailer!=null)
@@ -256,7 +256,7 @@ public class App {
 		table.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
 		table.setShowHorizontalLines(true);
 		table.setShowVerticalLines(true);
-		table.setModel(new DefaultTableModel(4,2));
+		table.setModel(new DefaultTableModel(5,2));
 		
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
@@ -267,7 +267,7 @@ public class App {
 			table.getColumnModel().getColumn(i).setCellRenderer(dtcr);
 		}
 		
-		String[] constraints = { "License In Memory", "License Save Status", "Public Key Loaded", "Private Key Loaded" };
+		String[] constraints = { "License In Memory", "Public Key Loaded", "Private Key Loaded", "License Requires Signing", "License Requires Saving" };
 		for(int i=0 ; i<table.getModel().getRowCount(); i++) {
 			table.getModel().setValueAt(constraints[i], i, 0);
 		}
@@ -530,7 +530,7 @@ public class App {
 	
 	private void liveStatusReceiver(LicenseGeneration lg, JTable table) {
 		
-		List<Boolean> statusReportList = List.of(lg.isLicenseLoaded(), lg.licensePendingSaveStatus(), lg.isPrivateKeyLoaded(), lg.isPublicKeyLoaded());
+		List<Boolean> statusReportList = List.of(lg.isLicenseLoaded(), lg.isPrivateKeyLoaded(), lg.isPublicKeyLoaded(), lg.licenseRequiresSigning(), lg.licenseRequiresSaving());
 		SwingUtilities.invokeLater(()->{
 			for(int i=0; i<table.getRowCount(); i++) {
 				table.getModel().setValueAt(statusReportList.get(i), i, 1);
