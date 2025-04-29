@@ -7,11 +7,13 @@ import javax.swing.SwingUtilities;
 
 import org.tinylog.Logger;
 
+import app.themes.LightTheme;
+
 public class ThemeManager {
 	
 	private static final Preferences prefs = Preferences.userNodeForPackage(ThemeManager.class);
     private static final String THEME_PREF_KEY = "selectedTheme";
-    private static final String DEFAULT_THEME = "app.themes.LightTheme";
+    private static final String DEFAULT_THEME = LightTheme.class.getCanonicalName();
     
     private ThemeManager() {
     	throw new IllegalStateException("Utility Class");

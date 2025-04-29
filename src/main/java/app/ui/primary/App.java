@@ -207,13 +207,13 @@ public class App {
 		lightThemeBtn.addActionListener(e-> {
 			LightTheme.setup();
 			SwingUtilities.updateComponentTreeUI(mainframe);
-			ThemeManager.registerTheme("app.themes.LightTheme");
+			ThemeManager.registerTheme(LightTheme.class.getCanonicalName());
 		});
 		
 		darkThemeBtn.addActionListener(e-> {
 			DarkTheme.setup();
 			SwingUtilities.updateComponentTreeUI(mainframe);
-			ThemeManager.registerTheme("app.themes.DarkTheme");
+			ThemeManager.registerTheme(DarkTheme.class.getCanonicalName());
 		});
 		
 		// a call to this function notifies the radio buttons of the theme that was loaded using the UIManager when the application was first started
