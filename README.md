@@ -11,7 +11,7 @@ You can also build your own binaries from the source code using Maven
 
 #### Clone the repository locally
 ```
-git clone https://github.com/Egg-03/FerrumX-GUI.git
+git clone https://github.com/Egg-03/License3j-GUI.git
 ```
 
 #### Build artifacts using Maven
