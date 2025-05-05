@@ -31,4 +31,4 @@ The following workflows are available from this point:
 3) Generating new keys for signing your license
 4) Loading *already saved keys*
 
-  
+#### 1) Creating a new license  
