@@ -184,13 +184,10 @@ public class App {
 			
 			if(logTailer!=null) {
 				logTailer.close();
-			}		
-        	
-        	if(scheduler!=null) {
-        		scheduler.close();
-        	}
-
-			System.exit(-1);
+			}
+			
+        	scheduler.close();
+        	System.exit(-1);
 		});
 		appMenu.add(forceQuit);
 		
