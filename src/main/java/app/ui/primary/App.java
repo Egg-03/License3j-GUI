@@ -141,10 +141,8 @@ public class App {
 		        	else {
 		        		if(logTailer!=null)
 			        		logTailer.close();
-			        	
-			        	if(scheduler!=null)
-		        			scheduler.close();
-			        	
+
+                        scheduler.close();
 		        		System.exit(0);
 		        	}	  		
 		        }
