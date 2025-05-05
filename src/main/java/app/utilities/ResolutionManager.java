@@ -28,15 +28,13 @@ public class ResolutionManager {
     
     private static String parseRectangleResolutionToString(Rectangle r) {
     	Rectangle bounds = r.getBounds();
-    	return new StringBuilder()
-				.append(bounds.x)
-				.append(",")
-				.append(bounds.y)
-				.append(",")
-				.append(bounds.width)
-				.append(",")
-				.append(bounds.height)
-				.toString();
+    	return bounds.x +
+                "," +
+                bounds.y +
+                "," +
+                bounds.width +
+                "," +
+                bounds.height;
     }
     
     private static Rectangle parseStringResolutionToRectangle(String resolution) {
