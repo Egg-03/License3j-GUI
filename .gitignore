@@ -226,3 +226,4 @@ buildNumber.properties
 /logs
 /Keys
 /Licenses
+.idea/discord.xml
