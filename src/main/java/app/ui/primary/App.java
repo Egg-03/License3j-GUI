@@ -89,7 +89,7 @@ public class App {
 	
 	private static final String APP_LOCATION="user.dir";
 	
-	private ScheduledExecutorService scheduler;
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	
 	/**
 	 * Launch the application.
@@ -323,7 +323,6 @@ public class App {
 		);
 		logAndStatusPanel.setLayout(gl_logAndStatusPanel);
 		
-		scheduler = Executors.newScheduledThreadPool(1);
 		scheduler.scheduleWithFixedDelay(()->liveStatusReceiver(lg, table), 1, 1, TimeUnit.SECONDS);
 	}
 
