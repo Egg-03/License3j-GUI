@@ -83,6 +83,8 @@ public class App {
 	private static final String APP_LOCATION="user.dir";
 	private ScheduledExecutorService scheduler;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private JPanel licensePanel;
+	private JPanel logAndStatusPanel;
 
 	/**
 	 * Launch the application.
@@ -150,6 +152,8 @@ public class App {
 			@Override
 			public void componentResized(ComponentEvent e) {
 				ResolutionManager.saveResolution(e.getComponent().getBounds());
+				licensePanel.setPreferredSize(new Dimension(mainframe.getWidth(), (2*mainframe.getHeight())/3));
+				logAndStatusPanel.setPreferredSize(new Dimension(mainframe.getWidth(), mainframe.getHeight()/3));
 			}
 		});
 		
@@ -205,6 +209,8 @@ public class App {
 		JMenuItem restoreDefaultResolution = new JMenuItem("Reset Resolution");
 		restoreDefaultResolution.addActionListener(e-> {
 			mainframe.setBounds(ResolutionManager.DEFAULT_RESOLUTION);
+			licensePanel.setPreferredSize(new Dimension(mainframe.getWidth(), (2*mainframe.getHeight())/3));
+			logAndStatusPanel.setPreferredSize(new Dimension(mainframe.getWidth(), mainframe.getHeight()/3));
 		});
 		helpMenu.add(restoreDefaultResolution);
 		
@@ -239,7 +245,7 @@ public class App {
 	}
 
 	private void addLogAndStatusPanel() {
-		JPanel logAndStatusPanel = new JPanel();
+		logAndStatusPanel = new JPanel();
 		mainframe.getContentPane().add(logAndStatusPanel, BorderLayout.SOUTH);
 		logAndStatusPanel.setPreferredSize(new Dimension(mainframe.getWidth(), mainframe.getHeight()/3));
 		logAndStatusPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Logs and Status", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -317,8 +323,9 @@ public class App {
 	}
 
 	private void addLicensePanel() {
-		JPanel licensePanel = new JPanel();
+		licensePanel = new JPanel();
 		mainframe.getContentPane().add(licensePanel, BorderLayout.CENTER);
+		licensePanel.setPreferredSize(new Dimension(mainframe.getWidth(), (2*mainframe.getHeight())/3));
 		licensePanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "License", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		licensePanel.setLayout(new BoxLayout(licensePanel, BoxLayout.X_AXIS));
 		
