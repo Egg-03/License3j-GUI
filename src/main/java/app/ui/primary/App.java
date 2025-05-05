@@ -78,14 +78,19 @@ import java.awt.event.ComponentEvent;
 public class App {
 
 	private JFrame mainframe;
-	private Tailer logTailer;
-	private final LicenseGeneration lg = new LicenseGeneration();
-	private static final String APP_LOCATION="user.dir";
-	private ScheduledExecutorService scheduler;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JPanel licensePanel;
 	private JPanel logAndStatusPanel;
-
+	
+	private final ButtonGroup buttonGroup = new ButtonGroup();
+	
+	private Tailer logTailer;
+	
+	private final LicenseGeneration lg = new LicenseGeneration();
+	
+	private static final String APP_LOCATION="user.dir";
+	
+	private ScheduledExecutorService scheduler;
+	
 	/**
 	 * Launch the application.
 	 */
