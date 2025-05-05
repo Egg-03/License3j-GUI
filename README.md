@@ -27,8 +27,8 @@ Upon starting the application, you will see this UI
 
 The following workflows are available from this point:
 1) Creating a new license
-2) Loading an already saved license
-3) Generate Keys
-4) Load Already Saved Keys
+2) Loading an *already saved license*
+3) Generating new keys for signing your license
+4) Loading *already saved keys*
 
   
