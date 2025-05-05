@@ -24,6 +24,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -37,10 +38,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -63,14 +66,14 @@ import app.themes.DarkTheme;
 import app.themes.LightTheme;
 import app.ui.secondary.AboutUI;
 import app.utilities.LogListener;
+import app.utilities.ResolutionManager;
 import app.utilities.ThemeManager;
 import app.utilities.UIManagerConfigurations;
 import javax0.license3j.HardwareBinder;
 import javax0.license3j.io.IOFormat;
 import net.miginfocom.swing.MigLayout;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.ButtonGroup;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class App {
 
@@ -113,9 +116,8 @@ public class App {
 	private void initialize() {
 		mainframe = new JFrame();
 		mainframe.setIconImage(Toolkit.getDefaultToolkit().getImage(App.class.getResource("/icons/logo.png")));
-		mainframe.setResizable(false);
 		mainframe.setTitle("License3J GUI");
-		mainframe.setBounds(100, 100, 1080, 495);
+		mainframe.setBounds(ResolutionManager.getResolution());
 		mainframe.setLocationRelativeTo(null);
 		mainframe.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		WindowAdapter exitListener = new WindowAdapter() {
@@ -143,6 +145,13 @@ public class App {
 		};
 		mainframe.addWindowListener(exitListener);
 		mainframe.getContentPane().setLayout(new BorderLayout(0, 0));
+		
+		mainframe.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				ResolutionManager.saveResolution(e.getComponent().getBounds());
+			}
+		});
 		
 		addMenuPanel();
 		addLicensePanel();
@@ -192,6 +201,12 @@ public class App {
 			}
 		});
 		helpMenu.add(openLogFolder);
+		
+		JMenuItem restoreDefaultResolution = new JMenuItem("Reset Resolution");
+		restoreDefaultResolution.addActionListener(e-> {
+			mainframe.setBounds(ResolutionManager.DEFAULT_RESOLUTION);
+		});
+		helpMenu.add(restoreDefaultResolution);
 		
 		JMenu appearanceMenu = new JMenu("Appearance");
 		menuBar.add(appearanceMenu);
