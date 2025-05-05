@@ -218,7 +218,7 @@ public class App {
 		
 		// a call to this function notifies the radio buttons of the theme that was loaded using the UIManager when the application was first started
 		// this function cannot be called when the LaF is being applied cause LaF is applied before the components are loaded
-		// and this function needs to access the loaded components or it will throw a NullPointerException
+		// and this function needs to access the loaded components, or it will throw a NullPointerException
 		ThemeManager.notifyCurrentTheme(lightThemeBtn, darkThemeBtn);
 		
 	}
@@ -483,7 +483,7 @@ public class App {
 		copyPublicKeyButton.addActionListener(e->{
 			try {
 				String publicKey = lg.digestPublicKey();
-				if(!publicKey.isBlank() || !publicKey.isEmpty()) {
+				if(!publicKey.isBlank()) {
 					Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(publicKey), null);
 					copyLabel.setText("Copied.");
 				}		

@@ -13,7 +13,7 @@ import org.apache.commons.io.input.TailerListenerAdapter;
  */
 public class LogListener extends TailerListenerAdapter {
 	
-	private JTextArea ta;
+	private final JTextArea ta;
 	
 	public LogListener(JTextArea ta) {
 		this.ta=ta;

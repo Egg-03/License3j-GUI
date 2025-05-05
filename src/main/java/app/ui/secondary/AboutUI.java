@@ -6,7 +6,9 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.Serial;
 import java.net.URISyntaxException;
+import java.util.Objects;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -28,10 +30,10 @@ import app.utilities.VersionAndOtherInfo;
 
 public class AboutUI extends JFrame {
 	
+	@Serial
 	private static final long serialVersionUID = -5925195455864099479L;
-	private JPanel contentPane;
 
-	/**
+    /**
 	 * Create the frame.
 	 */
 	public AboutUI() {
@@ -41,7 +43,7 @@ public class AboutUI extends JFrame {
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 620, 420);
-		contentPane = new JPanel();
+        JPanel contentPane = new JPanel();
 		contentPane.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 
 		setContentPane(contentPane);
@@ -53,7 +55,7 @@ public class AboutUI extends JFrame {
 		logoPanel.setBorder(new TitledBorder("Logo"));
 		
 		try {
-			BufferedImage wPic = ImageIO.read(this.getClass().getResource("/icons/logo.png"));
+			BufferedImage wPic = ImageIO.read(Objects.requireNonNull(this.getClass().getResource("/icons/logo.png")));
 			JLabel logo = new JLabel(new ImageIcon(wPic));
 			logoPanel.add(logo);
 		} catch (IOException e) {

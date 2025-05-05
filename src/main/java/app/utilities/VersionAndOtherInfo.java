@@ -21,9 +21,9 @@ public class VersionAndOtherInfo {
 			A license file is a special electronically signed configuration file. The library can create (including signing), read, and verify such license files. Learn more about License3j on [GitHub](https://github.com/verhas/License3j)
 
 			## Licensing
-			Both License3J and the GUI application are licensed under the [Apache2.0-License](https://www.apache.org/licenses/LICENSE-2.0). 
+			Both License3J and the GUI application are licensed under the [Apache2.0-License](https://www.apache.org/licenses/LICENSE-2.0).
 
-			## Other Libraries Used 
+			## Other Libraries Used
 			This app also depends on the following libraries:
 			
 			[TinyLog](https://tinylog.org/),

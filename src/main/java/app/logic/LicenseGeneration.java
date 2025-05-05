@@ -74,7 +74,7 @@ public class LicenseGeneration {
 
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); LicenseWriter lw = new LicenseWriter(baos)) {
 			lw.write(license, IOFormat.STRING);
-			return new String(baos.toByteArray(), StandardCharsets.UTF_8);
+			return baos.toString(StandardCharsets.UTF_8);
 		}
 	}
 

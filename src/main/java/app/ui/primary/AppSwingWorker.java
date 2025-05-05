@@ -12,14 +12,14 @@ import javax0.license3j.io.IOFormat;
 
 class AppSwingWorker {
 	
-	public AppSwingWorker() {
+	private AppSwingWorker() {
 		throw new IllegalStateException("Utility Class");
 	}
 }
 
 class NewLicense extends SwingWorker<Void, Void> {
 	
-	private LicenseGeneration lg;
+	private final LicenseGeneration lg;
 	
 	protected NewLicense(LicenseGeneration lg) {
 		this.lg=lg;
@@ -47,9 +47,9 @@ class NewLicense extends SwingWorker<Void, Void> {
 
 class LoadLicense extends SwingWorker<Void, Void> {
 	
-	private LicenseGeneration lg;
-	private IOFormat licenseType;
-	private File licenseFile;
+	private final LicenseGeneration lg;
+	private final IOFormat licenseType;
+	private final File licenseFile;
 	
 	protected LoadLicense(LicenseGeneration lg, IOFormat licenseType, File licenseFile) {
 		this.lg=lg;
@@ -79,7 +79,7 @@ class LoadLicense extends SwingWorker<Void, Void> {
 
 class DisplayLicense extends SwingWorker<String, Void> {
 	
-	private LicenseGeneration lg;
+	private final LicenseGeneration lg;
 	
 	protected DisplayLicense(LicenseGeneration lg) {
 		this.lg=lg;	
@@ -105,7 +105,7 @@ class DisplayLicense extends SwingWorker<String, Void> {
 
 class SignLicense extends SwingWorker<Void, Void> {
 	
-	private LicenseGeneration lg;
+	private final LicenseGeneration lg;
 	
 	protected SignLicense(LicenseGeneration lg) {
 		this.lg=lg;	
@@ -132,7 +132,7 @@ class SignLicense extends SwingWorker<Void, Void> {
 
 class VerifyLicense extends SwingWorker<Void, Void> {
 	
-	private LicenseGeneration lg;
+	private final LicenseGeneration lg;
 	
 	protected VerifyLicense(LicenseGeneration lg) {
 		this.lg=lg;	
@@ -159,14 +159,14 @@ class VerifyLicense extends SwingWorker<Void, Void> {
 
 class SaveLicense extends SwingWorker<Void, Void> {
 	
-	private LicenseGeneration lg;
-	private IOFormat licenseType;
-	private String licenseName;
+	private final LicenseGeneration lg;
+	private final IOFormat licenseType;
+	private final String licenseName;
 	
 	protected SaveLicense(LicenseGeneration lg, String licenseName, IOFormat licenseType) {
 		this.lg=lg;
 		this.licenseType=licenseType;
-		if(licenseName.isBlank() || licenseName.isEmpty())
+		if(licenseName.isBlank())
 			this.licenseName="defaultLicense"+licenseType;
 		else
 			this.licenseName = licenseName;
@@ -195,10 +195,10 @@ class SaveLicense extends SwingWorker<Void, Void> {
 
 class AddFeatureToLicense extends SwingWorker<Void, Void> {
 	
-	private LicenseGeneration lg;
-	private String featureName;
-	private String featureType;
-	private String featureContent;
+	private final LicenseGeneration lg;
+	private final String featureName;
+	private final String featureType;
+	private final String featureContent;
 	
 	
 	protected AddFeatureToLicense(LicenseGeneration lg, String featureName, String featureType, String featureContent) {
@@ -210,7 +210,7 @@ class AddFeatureToLicense extends SwingWorker<Void, Void> {
 
 	@Override
 	protected Void doInBackground() throws Exception {
-		if(featureName.isBlank()|| featureName.isEmpty() ||  featureContent.isBlank() || featureContent.isEmpty()) {
+		if(featureName.isBlank() || featureContent.isBlank()) {
 			return null;
 		}
 		lg.addFeature(featureName+":"+featureType+"="+featureContent);
@@ -233,12 +233,12 @@ class AddFeatureToLicense extends SwingWorker<Void, Void> {
 
 class GenerateKeys extends SwingWorker<Void, Void> {
 	
-	private LicenseGeneration lg;
-	private String algorithm;
-	private String size;
-	private IOFormat keyFormat;
-	private String privateKeyName;
-	private String publicKeyName;
+	private final LicenseGeneration lg;
+	private final String algorithm;
+	private final String size;
+	private final IOFormat keyFormat;
+	private final String privateKeyName;
+	private final String publicKeyName;
 	
 	
 	protected GenerateKeys(LicenseGeneration lg, String algorithm, String size, IOFormat keyFormat, String privateKeyName, String publicKeyName) {
@@ -272,9 +272,9 @@ class GenerateKeys extends SwingWorker<Void, Void> {
 
 class LoadPrivateKey extends SwingWorker<Void, Void> {
 	
-	private LicenseGeneration lg;
-	private IOFormat keyFormat;
-	private File keyFile;
+	private final LicenseGeneration lg;
+	private final IOFormat keyFormat;
+	private final File keyFile;
 	
 	protected LoadPrivateKey(LicenseGeneration lg, IOFormat keyFormat, File keyFile) {
 		this.lg=lg;
@@ -304,9 +304,9 @@ class LoadPrivateKey extends SwingWorker<Void, Void> {
 
 class LoadPublicKey extends SwingWorker<Void, Void> {
 	
-	private LicenseGeneration lg;
-	private IOFormat keyFormat;
-	private File keyFile;
+	private final LicenseGeneration lg;
+	private final IOFormat keyFormat;
+	private final File keyFile;
 	
 	protected LoadPublicKey(LicenseGeneration lg, IOFormat keyFormat,  File keyFile) {
 		this.lg=lg;
@@ -336,7 +336,7 @@ class LoadPublicKey extends SwingWorker<Void, Void> {
 
 class DigestPublicKey extends SwingWorker<String, Void> {
 	
-	private LicenseGeneration lg;
+	private final LicenseGeneration lg;
 	
 	
 	protected DigestPublicKey(LicenseGeneration lg) {
