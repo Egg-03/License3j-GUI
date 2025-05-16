@@ -7,7 +7,7 @@ public class VersionAndOtherInfo {
 	}
 	
 	public static final String APP_AUTHOR = "Egg-03";
-	public static final String APP_VERSION = "1.0.0";
+	public static final String APP_VERSION = "1.0.1";
 	
 	public static final String LICENSE3J_AUTHOR = "Peter Verhas";
 	public static final String LICENSE3J_VERSION = "3.3.0";
