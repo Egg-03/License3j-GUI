@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.egg-03</groupId>
   <artifactId>license3j-gui</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <name>License3j-GUI</name>
   <description>A GUI for License3j REPL application</description>
   <properties>
