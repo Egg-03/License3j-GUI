@@ -460,13 +460,12 @@ public class App {
 
 		JComboBox<String> algoComboBox = new JComboBox<>();
 		algoComboBox.setMinimumSize(new Dimension(20, 22));
-		algoComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "RSA/ECB/PKCS1Padding",
-				"RSA/ECB/OAEPWithSHA-1AndMGF1Padding", "RSA/ECB/OAEPWithSHA-256AndMGF1Padding" }));
+		algoComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "RSA/ECB/PKCS1Padding" }));
 		algoComboBox.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		keygenPanel.add(algoComboBox, "cell 0 1,growx");
 
 		JComboBox<String> algoSizeComboBox = new JComboBox<>();
-		algoSizeComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "2048", "3072", "4096", "8192" }));
+		algoSizeComboBox.setModel(new DefaultComboBoxModel<>(new String[] { "2048", "3072" }));
 		algoSizeComboBox.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		keygenPanel.add(algoSizeComboBox, "cell 1 1,growx");
 
